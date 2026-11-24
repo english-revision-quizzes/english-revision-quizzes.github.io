@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>English Grammar Quiz: Units 1 to 3</title><style>html,body{margin:0}</style></head><body><div id="root"></div><script>function mountQuiz(root, QUESTIONS) {
+  var css = '.gq{--bg:#fff7ec;--ink:#243046;--mut:#6b7689;--pri:#4f7cff;--pri2:#7a5cff;--ok:#1fa971;--okbg:#dff6ea;--bad:#e5484d;--badbg:#fde4e4;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:linear-gradient(160deg,#fff7ec 0%,#eaf1ff 100%);min-height:100vh;box-sizing:border-box;padding:16px;display:flex;justify-content:center}.gq *{box-sizing:border-box}.gq-wrap{width:100%;max-width:560px}.gq-card{background:#fff;border-radius:22px;padding:22px 18px;box-shadow:0 8px 30px rgba(60,80,140,.15)}.gq h1{font-size:26px;margin:6px 0 8px;line-height:1.2}.gq p{line-height:1.5;margin:8px 0}.gq-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.gq-prog{flex:1;height:10px;background:#e6ebf7;border-radius:99px;overflow:hidden}.gq-bar{height:100%;background:linear-gradient(90deg,var(--pri),var(--pri2));border-radius:99px;transition:width .3s}.gq-cnt{font-size:14px;color:var(--mut);white-space:nowrap}.gq-snd{border:0;background:#eef2ff;color:var(--ink);border-radius:99px;padding:8px 12px;font-size:14px;cursor:pointer;min-height:40px}.gq-topic{display:inline-block;background:#eef2ff;color:var(--pri2);font-size:13px;font-weight:600;border-radius:99px;padding:4px 10px;margin-bottom:10px}.gq-q{font-size:21px;font-weight:700;line-height:1.4;margin:6px 0 16px}.gq-opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:2px solid #dfe5f3;background:#fff;color:var(--ink);border-radius:14px;padding:13px 14px;font-size:18px;margin:10px 0;cursor:pointer;min-height:54px;font-family:inherit}.gq-opt:active{transform:scale(.99)}.gq-l{flex:none;width:30px;height:30px;border-radius:50%;background:#eef2ff;color:var(--pri2);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:15px}.gq-opt.ok{border-color:var(--ok);background:var(--okbg)}.gq-opt.ok .gq-l{background:var(--ok);color:#fff}.gq-opt.bad{border-color:var(--bad);background:var(--badbg)}.gq-opt.bad .gq-l{background:var(--bad);color:#fff}.gq-opt[disabled]{cursor:default}.gq-btn{display:block;width:100%;border:0;border-radius:14px;padding:15px;font-size:18px;font-weight:700;color:#fff;background:linear-gradient(90deg,var(--pri),var(--pri2));cursor:pointer;margin-top:16px;min-height:54px;font-family:inherit}.gq-btn.sec{background:#eef2ff;color:var(--pri2)}.gq-fb{min-height:26px;font-weight:700;margin-top:6px}.gq-score{font-size:56px;font-weight:800;text-align:center;color:var(--pri2);margin:4px 0}.gq-center{text-align:center}.gq-rev{border:2px solid #f3d3d3;background:#fffafa;border-radius:14px;padding:12px 14px;margin:10px 0}.gq-rev b{display:block;margin-bottom:6px}.gq-w{color:var(--bad)}.gq-r{color:var(--ok);font-weight:700}.gq-list{padding-left:18px;color:var(--mut);line-height:1.6}.gq-conf{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:50}';
+  var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+  var app = document.createElement('div'); app.className = 'gq'; root.appendChild(app);
+  var wrap = document.createElement('div'); wrap.className = 'gq-wrap'; app.appendChild(wrap);
+  var N = QUESTIONS.length, L = 'abcd';
+  var idx = 0, answers = [], score = 0, muted = false, picked = -1;
+  // ---------- audio ----------
+  var ctx = null, master = null, musicGain = null, musicOn = false, timer = null, step = 0, nextT = 0;
+  function initAudio() {
+    if (!ctx) {
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      ctx = new AC(); master = ctx.createGain(); master.gain.value = muted ? 0 : 1; master.connect(ctx.destination);
+      musicGain = ctx.createGain(); musicGain.gain.value = 0; musicGain.connect(master);
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+  }
+  function tone(f, t, d, v, type, dest) {
+    var o = ctx.createOscillator(), g = ctx.createGain(); o.type = type || 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(g); g.connect(dest || master); o.start(t); o.stop(t + d + 0.05);
+  }
+  function sfx(kind) {
+    if (!ctx || muted) return; var t = ctx.currentTime;
+    if (kind === 'ok') { tone(659, t, 0.25, 0.18); tone(880, t + 0.12, 0.35, 0.18); }
+    else if (kind === 'bad') { tone(260, t, 0.3, 0.16, 'triangle'); tone(196, t + 0.15, 0.4, 0.16, 'triangle'); }
+    else if (kind === 'win') { [523, 659, 784, 1047, 784, 1047, 1318].forEach(function (f, i) { tone(f, t + i * 0.14, 0.4, 0.17); }); }
+    else if (kind === 'tap') { tone(500, t, 0.08, 0.06); }
+  }
+  var CH = [[261.6, 329.6, 392], [220, 261.6, 329.6], [174.6, 220, 261.6], [196, 246.9, 293.7]];
+  var MEL = [659, 0, 784, 0, 659, 0, 523, 0, 587, 0, 659, 0, 523, 0, 0, 0];
+  function sched() {
+    if (!ctx || !musicOn) return;
+    var beat = 60 / 66;
+    while (nextT < ctx.currentTime + 0.6) {
+      var s = step % 16;
+      if (s % 4 === 0) CH[s / 4].forEach(function (f) { tone(f, nextT, beat * 3.6, 0.07, 'sine', musicGain); });
+      if (MEL[s]) tone(MEL[s], nextT, beat * 1.4, 0.05, 'sine', musicGain);
+      nextT += beat; step++;
+    }
+  }
+  function startMusic() {
+    initAudio(); if (!ctx || musicOn) return; musicOn = true; step = 0; nextT = ctx.currentTime + 0.1;
+    musicGain.gain.cancelScheduledValues(ctx.currentTime); musicGain.gain.setValueAtTime(0, ctx.currentTime); musicGain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 1.5);
+    sched(); timer = setInterval(sched, 200);
+  }
+  function stopMusic() {
+    musicOn = false; clearInterval(timer);
+    if (ctx) { musicGain.gain.cancelScheduledValues(ctx.currentTime); musicGain.gain.setValueAtTime(musicGain.gain.value, ctx.currentTime); musicGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.6); }
+  }
+  function setMute(m) { muted = m; if (master) master.gain.setTargetAtTime(m ? 0 : 1, ctx.currentTime, 0.05); }
+  // ---------- helpers ----------
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function clear() { wrap.innerHTML = ''; }
+  function sndBtn() {
+    var b = el('button', 'gq-snd', muted ? '🔇 Sound off' : '🔊 Sound on'); b.type = 'button';
+    b.onclick = function () { initAudio(); setMute(!muted); b.textContent = muted ? '🔇 Sound off' : '🔊 Sound on'; };
+    return b;
+  }
+  // ---------- screens ----------
+  function start() {
+    clear(); idx = 0; answers = []; score = 0;
+    var c = el('div', 'gq-card');
+    var top = el('div', 'gq-top'); top.appendChild(el('span', 'gq-cnt', '')); top.appendChild(sndBtn()); c.appendChild(top);
+    c.appendChild(el('div', 'gq-center', '📘'));
+    c.firstChild.nextSibling.style.fontSize = '54px';
+    c.appendChild(el('h1', '', 'English Grammar Quiz'));
+    c.appendChild(el('p', '', 'Units 1 to 3 · 1st Secondary'));
+    var ul = el('ul', 'gq-list');
+    ['20 multiple-choice questions', 'One question on each screen', 'Pick an answer, then tap Next', 'Turn the sound on or off any time'].forEach(function (t) { ul.appendChild(el('li', '', t)); });
+    c.appendChild(ul);
+    var b = el('button', 'gq-btn', 'Start the quiz'); b.type = 'button';
+    b.onclick = function () { initAudio(); startMusic(); sfx('tap'); question(); };
+    c.appendChild(b); wrap.appendChild(c);
+  }
+  function question() {
+    clear(); picked = -1; var q = QUESTIONS[idx];
+    var c = el('div', 'gq-card');
+    var top = el('div', 'gq-top');
+    var pr = el('div', 'gq-prog'); var bar = el('div', 'gq-bar'); bar.style.width = (idx / N * 100) + '%'; pr.appendChild(bar);
+    top.appendChild(el('span', 'gq-cnt', (idx + 1) + ' / ' + N)); top.appendChild(pr); top.appendChild(sndBtn()); c.appendChild(top);
+    c.appendChild(el('span', 'gq-topic', q.topic));
+    c.appendChild(el('div', 'gq-q', (idx + 1) + '. ' + q.q));
+    var btns = [];
+    q.o.forEach(function (t, i) {
+      var b = el('button', 'gq-opt'); b.type = 'button';
+      b.appendChild(el('span', 'gq-l', L[i].toUpperCase())); b.appendChild(el('span', '', t));
+      b.onclick = function () {
+        if (picked >= 0) return; picked = i; initAudio();
+        var right = i === q.a; answers.push(i); if (right) score++;
+        btns.forEach(function (x, j) { x.disabled = true; if (j === q.a) x.classList.add('ok'); else if (j === i) x.classList.add('bad'); });
+        fb.textContent = right ? '✅ Correct! Well done.' : '❌ Not quite. The correct answer is ' + L[q.a].toUpperCase() + ': ' + q.o[q.a];
+        fb.style.color = right ? 'var(--ok)' : 'var(--bad)';
+        sfx(right ? 'ok' : 'bad'); next.style.display = 'block';
+      };
+      btns.push(b); c.appendChild(b);
+    });
+    var fb = el('div', 'gq-fb', ''); c.appendChild(fb);
+    var next = el('button', 'gq-btn', idx === N - 1 ? 'See my results' : 'Next →'); next.type = 'button'; next.style.display = 'none';
+    next.onclick = function () { sfx('tap'); idx++; if (idx >= N) results(); else { question(); window.scrollTo(0, 0); } };
+    c.appendChild(next); wrap.appendChild(c);
+  }
+  function results() {
+    stopMusic(); clear(); window.scrollTo(0, 0);
+    var c = el('div', 'gq-card'); var top = el('div', 'gq-top'); top.appendChild(el('span', 'gq-cnt', 'Results')); top.appendChild(sndBtn()); c.appendChild(top);
+    c.appendChild(el('h1', 'gq-center', 'Quiz finished! 🎉'));
+    c.appendChild(el('div', 'gq-score', score + ' / ' + N));
+    var pct = Math.round(score / N * 100);
+    var msg = pct >= 90 ? 'Excellent work!' : pct >= 70 ? 'Very good!' : pct >= 50 ? 'Good try. Review and try again.' : 'Keep practising. You can do it!';
+    c.appendChild(el('p', 'gq-center', pct + '% · ' + msg));
+    var wrong = []; QUESTIONS.forEach(function (q, i) { if (answers[i] !== q.a) wrong.push(i); });
+    c.appendChild(el('h2', '', wrong.length ? 'Review: questions to look at again' : 'Perfect! No wrong answers.'));
+    wrong.forEach(function (i) {
+      var q = QUESTIONS[i], r = el('div', 'gq-rev');
+      r.appendChild(el('b', '', (i + 1) + '. ' + q.q));
+      var y = el('div', 'gq-w', 'Your answer: ' + L[answers[i]].toUpperCase() + '. ' + q.o[answers[i]]); r.appendChild(y);
+      r.appendChild(el('div', 'gq-r', 'Correct answer: ' + L[q.a].toUpperCase() + '. ' + q.o[q.a]));
+      r.appendChild(el('div', '', q.topic)); r.lastChild.style.cssText = 'font-size:13px;color:var(--mut);margin-top:4px';
+      c.appendChild(r);
+    });
+    var b = el('button', 'gq-btn', 'Try again'); b.type = 'button'; b.onclick = function () { start(); }; c.appendChild(b);
+    wrap.appendChild(c);
+    sfx('win'); confetti();
+  }
+  function confetti() {
+    var cv = el('canvas', 'gq-conf'); document.body.appendChild(cv);
+    var w = cv.width = window.innerWidth, h = cv.height = window.innerHeight, g = cv.getContext('2d');
+    var cols = ['#ff5d73', '#ffb703', '#4f7cff', '#1fa971', '#7a5cff', '#ff8fab'], P = [];
+    for (var i = 0; i < 140; i++) P.push({ x: Math.random() * w, y: -20 - Math.random() * h * 0.6, s: 6 + Math.random() * 7, vy: 2 + Math.random() * 3.5, vx: -1.5 + Math.random() * 3, r: Math.random() * 6, vr: -.2 + Math.random() * .4, c: cols[i % cols.length] });
+    var t0 = Date.now();
+    (function f() {
+      g.clearRect(0, 0, w, h);
+      P.forEach(function (p) { p.x += p.vx; p.y += p.vy; p.r += p.vr; g.save(); g.translate(p.x, p.y); g.rotate(p.r); g.fillStyle = p.c; g.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); g.restore(); });
+      if (Date.now() - t0 < 5500) requestAnimationFrame(f); else cv.remove();
+    })();
+  }
+  start();
+}
+
+mountQuiz(document.getElementById("root"),[{"topic": "Unit 1 · Past Simple", "q": "Last summer, my family ____ the Egyptian Museum in Cairo.", "o": ["visit", "were visiting", "visiting", "visited"], "a": 3}, {"topic": "Unit 1 · Past Continuous", "q": "While Mona ____ her homework, the lights went out.", "o": ["did", "does", "is doing", "was doing"], "a": 3}, {"topic": "Unit 1 · Past Continuous", "q": "I ____ TV when the phone rang.", "o": ["watched", "was watching", "watch", "am watching"], "a": 1}, {"topic": "Unit 1 · Past Simple", "q": "He ____ to school yesterday because he was ill.", "o": ["didn't go", "doesn't go", "didn't went", "wasn't going"], "a": 0}, {"topic": "Unit 1 · Past Continuous", "q": "What ____ you ____ at eight o'clock last night?", "o": ["did / do", "are / doing", "do / do", "were / doing"], "a": 3}, {"topic": "Unit 1 · Past Simple and Past Continuous", "q": "The guide was talking about the temple when a tourist ____ a question.", "o": ["asked", "asks", "was asking", "has asked"], "a": 0}, {"topic": "Unit 2 · Modal verbs", "q": "You ____ park here. It is against the law.", "o": ["should", "don't have to", "mustn't", "can"], "a": 2}, {"topic": "Unit 2 · Modal verbs", "q": "You ____ eat so much sugar. It is not healthy.", "o": ["shouldn't", "have to", "must", "need to"], "a": 0}, {"topic": "Unit 2 · Modal verbs", "q": "Tomorrow is a holiday, so students ____ wear the school uniform.", "o": ["don't have to", "mustn't", "shouldn't", "must"], "a": 0}, {"topic": "Unit 2 · Modal verbs", "q": "I missed the bus this morning. I ____ up earlier.", "o": ["should get", "should have got", "mustn't get", "shouldn't have got"], "a": 1}, {"topic": "Unit 2 · Modal verbs (passive)", "q": "Vegetables should ____ before you cook them.", "o": ["wash", "be washed", "to wash", "washing"], "a": 1}, {"topic": "Unit 2 · Modal verbs", "q": "Emad cut his leg, so he ____ go to hospital yesterday.", "o": ["must", "should", "has to", "had to"], "a": 3}, {"topic": "Unit 2 · Modal verbs", "q": "You ____ come and try my mom's food. I'm sure you will love it!", "o": ["mustn't", "shouldn't", "must", "needn't"], "a": 2}, {"topic": "Unit 3 · Zero conditional", "q": "If you heat ice, it ____.", "o": ["will melt", "would melt", "melts", "melted"], "a": 2}, {"topic": "Unit 3 · First conditional", "q": "If it rains tomorrow, the picnic ____.", "o": ["cancelled", "would cancel", "is cancelling", "will be cancelled"], "a": 3}, {"topic": "Unit 3 · Second conditional", "q": "If I ____ you, I would speak to the teacher.", "o": ["am", "were", "be", "would be"], "a": 1}, {"topic": "Unit 3 · Second conditional", "q": "If I had a lot of money, I ____ around the world.", "o": ["will travel", "travel", "would travel", "would have travelled"], "a": 2}, {"topic": "Unit 3 · Conditionals (unless)", "q": "You won't pass the exam ____ you study hard.", "o": ["if", "unless", "when", "in case"], "a": 1}, {"topic": "Unit 3 · Second conditional", "q": "If Ali studied harder, he ____ better marks.", "o": ["will get", "gets", "would get", "would have got"], "a": 2}, {"topic": "Unit 3 · Second conditional", "q": "What would you do if you ____ lost in a big city?", "o": ["got", "get", "will get", "had get"], "a": 0}]);</script></body></html>
