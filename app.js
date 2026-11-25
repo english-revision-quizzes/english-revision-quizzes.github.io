@@ -156,13 +156,13 @@ function runSet(opts){
     $('#dots',root).innerHTML='';$('#cnt',root).textContent='';
     var stars=score===n?'⭐⭐⭐':score>=n-2?'⭐⭐':score>=n/2?'⭐':'';
     var h='<div class="result"><div class="score" style="color:'+(pass?'#14b86a':'#ff6b6b')+'">'+score+' / '+n+'</div><div class="stars">'+(stars||'💪')+'</div>';
-    if(pass&&opts.review){h+='<h2>Brilliant, '+esc(name)+'! 🎉</h2><p>All of these are fixed and removed from your list.</p>'}else if(!pass&&opts.review){h+='<h2>Good effort, '+esc(name)+'!</h2><p>The ones you got right are removed from your list. Practice the rest again.</p>'}else if(pass){h+='<h2>Amazing, '+esc(name)+'! 🎉</h2><p>All answers correct. '+(opts.hasNext?'The next set is unlocked!':'You finished every set in this section!')+'</p>'}
+    if(opts.challenge){h+=pass?'<h2>Perfect challenge, '+esc(name)+'! 🏆</h2><p>All 10 correct!</p>':'<h2>Nice try, '+esc(name)+'! ⚡</h2><p>You got '+score+' out of '+n+'. Check the answers below, then challenge yourself again.</p>'}else if(pass&&opts.review){h+='<h2>Brilliant, '+esc(name)+'! 🎉</h2><p>All of these are fixed and removed from your list.</p>'}else if(!pass&&opts.review){h+='<h2>Good effort, '+esc(name)+'!</h2><p>The ones you got right are removed from your list. Practice the rest again.</p>'}else if(pass){h+='<h2>Amazing, '+esc(name)+'! 🎉</h2><p>All answers correct. '+(opts.hasNext?'The next set is unlocked!':'You finished every set in this section!')+'</p>'}
     else{h+='<h2>So close, '+esc(name)+'!</h2><p>You need all '+n+' correct to unlock the next set. Look at the answers below, then try again. You can do it! 💪</p>'}
     if(!pass&&missed.length){h+='<div class="review">';missed.forEach(function(m){h+='<div class="r">'+rich(m.q.q)+'<br>✔ <b>'+esc(answerText(m.q))+'</b>'+(m.q.e?'<br><small>'+rich(m.q.e)+'</small>':'')+'</div>'});h+='</div>'}
     if(opts.challenge){h+='<div class="cres">\u23f1 Time: <b>'+elapsed+' s</b> &nbsp; '+(bonus?'Speed bonus: <b>'+'\u26a1'.repeat(bonus)+'</b>':'No speed bonus this time')+'</div><p class="mini" style="text-align:center">Bonus \u26a1: 8+ correct and under 120 s = 1, under 90 s = 2, under 60 s = 3.</p>'}
     h+='<div class="btns">';
     if(pass&&opts.hasNext)h+='<button class="btn" id="bn">Next set ➜</button>';
-    if(!pass)h+='<button class="btn" id="br">Try again 🔁</button>';
+    if(!pass&&!opts.challenge)h+='<button class="btn" id="br">Try again 🔁</button>';
     h+='<button class="btn ghost" id="bc">Back to sets</button></div></div>';
     b.innerHTML=h;
     if(pass){sfx.win();confetti();}else sfx.fail();
