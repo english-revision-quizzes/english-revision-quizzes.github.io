@@ -90,7 +90,7 @@ function runSet(opts){
   var Q=shuffle(opts.questions);var name=user()||'friend';
   var root=el('div','quiz');document.body.appendChild(root);document.body.style.overflow='hidden';
   var idx=0,score=0,missed=[],marks=[];
-  function close(){root.remove();document.body.style.overflow='';}
+  function close(){if(typeof tmr!=='undefined'&&tmr)clearInterval(tmr);root.remove();document.body.style.overflow='';}
   function frame(){
     root.innerHTML='<div class="qtop"><button class="x" aria-label="Close">✕</button><div class="t">'+esc(opts.title)+'</div><div class="t" style="flex:0;white-space:nowrap" id="cnt"></div></div><div class="dots" id="dots"></div><div class="qbody" id="qb"></div>';
     $('.x',root).onclick=function(){if(confirm('Leave this set? Your answers in this try will be lost.'))close()};
@@ -152,25 +152,29 @@ function runSet(opts){
   }
   function result(){
     var n=Q.length,pass=score===n;var b=$('#qb',root);
+    var elapsed=Math.round((Date.now()-t0)/1000),bonus=0;if(tmr){clearInterval(tmr)}if(opts.challenge&&score>=8){bonus=elapsed<=60?3:elapsed<=90?2:elapsed<=120?1:0}
     $('#dots',root).innerHTML='';$('#cnt',root).textContent='';
     var stars=score===n?'⭐⭐⭐':score>=n-2?'⭐⭐':score>=n/2?'⭐':'';
     var h='<div class="result"><div class="score" style="color:'+(pass?'#14b86a':'#ff6b6b')+'">'+score+' / '+n+'</div><div class="stars">'+(stars||'💪')+'</div>';
     if(pass&&opts.review){h+='<h2>Brilliant, '+esc(name)+'! 🎉</h2><p>All of these are fixed and removed from your list.</p>'}else if(!pass&&opts.review){h+='<h2>Good effort, '+esc(name)+'!</h2><p>The ones you got right are removed from your list. Practice the rest again.</p>'}else if(pass){h+='<h2>Amazing, '+esc(name)+'! 🎉</h2><p>All answers correct. '+(opts.hasNext?'The next set is unlocked!':'You finished every set in this section!')+'</p>'}
     else{h+='<h2>So close, '+esc(name)+'!</h2><p>You need all '+n+' correct to unlock the next set. Look at the answers below, then try again. You can do it! 💪</p>'}
     if(!pass&&missed.length){h+='<div class="review">';missed.forEach(function(m){h+='<div class="r">'+rich(m.q.q)+'<br>✔ <b>'+esc(answerText(m.q))+'</b>'+(m.q.e?'<br><small>'+rich(m.q.e)+'</small>':'')+'</div>'});h+='</div>'}
+    if(opts.challenge){h+='<div class="cres">\u23f1 Time: <b>'+elapsed+' s</b> &nbsp; '+(bonus?'Speed bonus: <b>'+'\u26a1'.repeat(bonus)+'</b>':'No speed bonus this time')+'</div><p class="mini" style="text-align:center">Bonus \u26a1: 8+ correct and under 120 s = 1, under 90 s = 2, under 60 s = 3.</p>'}
     h+='<div class="btns">';
     if(pass&&opts.hasNext)h+='<button class="btn" id="bn">Next set ➜</button>';
     if(!pass)h+='<button class="btn" id="br">Try again 🔁</button>';
     h+='<button class="btn ghost" id="bc">Back to sets</button></div></div>';
     b.innerHTML=h;
     if(pass){sfx.win();confetti();}else sfx.fail();
-    var done=opts.onDone&&opts.onDone(pass,score);
+    var done=opts.onDone&&opts.onDone(pass,score,elapsed,bonus);
     var bn=$('#bn',root);if(bn)bn.onclick=function(){close();if(opts.next)opts.next()};
     var br=$('#br',root);if(br)br.onclick=function(){close();runSet(opts)};
     $('#bc',root).onclick=close;
     root.scrollTop=0;
   }
+  var t0=Date.now(),tmr=null;
   frame();show();
+  if(opts.challenge){var tm=el('div','t');tm.id='tm';tm.style.cssText='flex:0;white-space:nowrap;margin-left:8px';tm.textContent='\u23f1 0:00';$('.qtop',root).appendChild(tm);tmr=setInterval(function(){var e=Math.round((Date.now()-t0)/1000);tm.textContent='\u23f1 '+Math.floor(e/60)+':'+('0'+e%60).slice(-2)},500)}
 }
 
 /* ---------- section page ---------- */
