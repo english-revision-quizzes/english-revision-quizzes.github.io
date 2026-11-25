@@ -42,8 +42,8 @@ function cert(u){
  g.strokeStyle='#ffc533';g.lineWidth=4;g.beginPath();g.moveTo(400,700);g.lineTo(W-400,700);g.stroke();
  g.fillStyle='#1f1b4d';g.font='40px Segoe UI,Arial,sans-serif';g.fillText('for finishing every set of',W/2,790);
  g.font='bold 62px Segoe UI,Arial,sans-serif';g.fillText('English OL · Unit '+u.n+': '+u.t,W/2,880);
- g.font='34px Segoe UI,Arial,sans-serif';g.fillStyle='#4a4580';g.fillText('Grade 10 · '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}),W/2,985);
- g.font='70px sans-serif';g.fillText('⭐ ⭐ ⭐',W/2,1060);
+ g.font='34px Segoe UI,Arial,sans-serif';g.fillStyle='#4a4580';g.fillText('Grade 10 · '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}),W/2,955);
+ g.font='70px sans-serif';g.fillText('⭐ ⭐ ⭐',W/2,1030);
  var a=document.createElement('a');a.download='Certificate-Unit'+u.n+'-'+(name||'student').replace(/[^A-Za-z0-9]+/g,'_')+'.png';a.href=c.toDataURL('image/png');document.body.appendChild(a);a.click();a.remove();
  if(EE.sfx)EE.sfx.win();
 }
