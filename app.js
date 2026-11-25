@@ -118,7 +118,7 @@ function header(){
   var bub=el('div','bubbles');for(var i=0;i<9;i++){var s=document.createElement('span');var z=40+Math.random()*120;s.style.cssText='width:'+z+'px;height:'+z+'px;left:'+Math.random()*100+'%;animation-duration:'+(14+Math.random()*16)+'s;animation-delay:-'+Math.random()*20+'s';bub.appendChild(s)}
   document.body.insertBefore(bub,document.body.firstChild);
   var t=el('div','top');
-  t.innerHTML='<a class="brand" href="index.html"><i>EE</i> Easy English</a><span class="sp"></span><button class="chip" id="av" aria-label="Choose avatar"></button><button class="chip" id="dk" aria-label="Dark mode"></button><a class="chip" id="mm" href="mistakes.html" aria-label="My mistakes"></a><button class="chip" id="who"></button><button class="chip" id="mute" aria-label="Sound"></button>';
+  t.innerHTML='<a class="brand" href="index.html"><i>EE</i><span class="bt"> Easy English</span></a><span class="sp"></span><button class="chip" id="av" aria-label="Choose avatar"></button><button class="chip" id="dk" aria-label="Dark mode"></button><a class="chip" id="mm" href="mistakes.html" aria-label="My mistakes"></a><button class="chip" id="who"></button><button class="chip" id="mute" aria-label="Sound"></button>';
   document.body.insertBefore(t,bub.nextSibling);
   function paint(){$('#av').innerHTML=avIdx()>=0?avSVG(avIdx(),24):'\ud83d\ude42';$('#dk').textContent=store.get('ee_dark')==='1'?'\u2600\ufe0f':'\ud83c\udf19';var mc=missCount();$('#mm').textContent='\ud83d\udcdd'+(mc?' '+mc:'');$('#mute').textContent=muted()?'🔇':'🔊';$('#who').textContent=user()?user():'Sign in'}
   $('#dk').onclick=function(){store.set('ee_dark',store.get('ee_dark')==='1'?'0':'1');applyDark();paint()};
