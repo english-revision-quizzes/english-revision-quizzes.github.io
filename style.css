@@ -203,3 +203,8 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
 .mbtn{display:block;text-decoration:none;text-align:center;background:var(--sun);color:var(--ink);font-weight:900;border-radius:999px;padding:10px 16px;margin-top:14px;font-size:18px}
 .cres{text-align:center;font-size:18px;margin:10px 0;font-weight:700}
 .cbest{display:flex;justify-content:space-between;gap:8px;background:var(--soft);border-radius:14px;padding:10px 14px;margin-top:8px;font-weight:700}
+.fcard{background:linear-gradient(160deg,#fff,#f3f1ff);border:3px solid var(--soft);border-radius:26px;padding:28px 16px;margin:14px 0;text-align:center;min-height:210px;cursor:pointer;box-shadow:var(--shadow)}
+.fem{font-size:64px}.fw{font-size:32px;font-weight:900;color:var(--bg1);margin-top:6px}.fw small{font-size:15px;color:var(--ink2);font-weight:700}
+.fm{font-size:20px;font-weight:700;margin-top:12px}.far{font-size:26px;color:var(--ink2);margin-top:6px;direction:rtl}
+.fbtns{display:flex;gap:10px}.fbtns .btn{flex:1}.btn.bad{background:linear-gradient(90deg,#ff6b6b,#ef4565)}
+/* v4 */
