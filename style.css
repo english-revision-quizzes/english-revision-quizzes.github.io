@@ -233,3 +233,4 @@ body.dark .chip2{background:#2b2753;color:#c9c0ff}
 .chip#dk{margin-right:2px}
 .qa{background:var(--soft);border-radius:14px;padding:10px 12px;margin:8px 0}.qa b{color:var(--bg1)}
 body.dark .qa b{color:#c9c0ff}
+body.dark .quiz{background:linear-gradient(160deg,#17133a 0%,#1d1850 40%,#10264a 75%,#0a3a3a 100%)}
