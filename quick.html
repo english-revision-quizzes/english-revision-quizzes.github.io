@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quick revision - Easy English</title><meta name="robots" content="noindex">
+<link rel="stylesheet" href="style.css"></head><body>
+<div class="wrap"><div class="crumbs"><a href="index.html">Home</a> › Quick revision</div><h1 class="title">🌙 Quick revision</h1>
+<p class="sub">Only the most important points, for the night before the exam. Pick a unit.</p>
+<div class="panel"><div id="qr"></div></div></div>
+<script src="app.js"></script>
+<script>EE.header();(function(){
+var U={ol1:['Unit 1 · Egypt\'s Heritage',['ol1-grammar3','ol1-vocab12','ol1-vocab4']],ol2:['Unit 2 · Hands Help, Hearts Care',['ol2-grammar3','ol2-vocab12','ol2-vocab45']],ol3:['Unit 3 · Truth vs. Lies',['ol3-grammar3','ol3-vocab12','ol3-vocab45']]};
+var box=document.getElementById('qr');
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function menu(){box.innerHTML=Object.keys(U).map(function(u){return '<div style="margin-bottom:12px"><button class="btn" data-u="'+u+'" style="width:100%">📌 '+U[u][0]+'</button></div>'}).join('');
+ box.querySelectorAll('[data-u]').forEach(function(b){b.onclick=function(){show(b.getAttribute('data-u'))}})}
+function show(u){box.innerHTML='<p>Loading...</p>';
+ Promise.all(U[u][1].map(function(id){return fetch(id+'.html').then(function(r){return r.text()}).then(function(t){return new DOMParser().parseFromString(t,'text/html')})})).then(function(ds){
+  var h='<button class="btn ghost" id="bk" style="padding:8px 16px;font-size:15px">⬅ Units</button><h2>'+esc(U[u][0])+'</h2>';
+  var notes=[];ds[0].querySelectorAll('.imp,.formula,.warn').forEach(function(e){var c=e.cloneNode(true);c.querySelectorAll('.say').forEach(function(x){x.remove()});notes.push(c.outerHTML)});
+  var seen={};notes=notes.filter(function(x){if(seen[x])return false;seen[x]=1;return true});
+  h+='<h3>⭐ Important notes</h3>'+(notes.length?notes.join(''):'<p>No notes.</p>');
+  var words=[],ws={};
+  ds.slice(1).forEach(function(d){d.querySelectorAll('.tp[data-pane="0"] .wc').forEach(function(c){var b=c.querySelector('.say');var w=b?b.getAttribute('data-say'):'';if(!w||ws[w])return;ws[w]=1;words.push('<div class="qa"><b>'+esc(w)+'</b> · '+esc((c.querySelector('.mn')||{}).textContent||'')+' · <span style="direction:rtl;display:inline-block">'+esc((c.querySelector('.ar')||{}).textContent||'')+'</span></div>')})});
+  h+='<h3>📖 Key words ('+words.length+')</h3>'+words.join('');
+  box.innerHTML=h;document.getElementById('bk').onclick=menu;window.scrollTo(0,0)
+ }).catch(function(){box.innerHTML='<p>Could not load. Check your internet and try again.</p>'})}
+menu();})();</script></body></html>
