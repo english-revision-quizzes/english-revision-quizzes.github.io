@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weekly leaderboard - Easy English</title><meta name="robots" content="noindex">
+<link rel="stylesheet" href="style.css"></head><body>
+<div class="wrap"><div class="crumbs"><a href="index.html">Home</a> › Leaderboard</div><h1 class="title">🏆 Weekly leaderboard</h1>
+<p class="sub">Points this week. Pass a new set = 10 points. Challenge = your score plus 3 for each ⚡. A new week starts every Saturday.</p>
+<div class="panel"><div id="lb">Loading...</div>
+<div class="cbest" style="margin-top:14px"><span>Show my first name on the board</span><button class="btn" id="tg" style="padding:8px 14px;font-size:15px"></button></div>
+<p class="mini" style="margin-top:8px">The board shows only first names and points. Names are shared with the other students.</p></div></div>
+<script src="app.js"></script>
+<script>EE.header();(function(){
+var box=document.getElementById('lb'),tg=document.getElementById('tg');
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function paintTg(){tg.textContent=EE.lbOff()?'Off':'On'}
+tg.onclick=function(){if(EE.lbOff()){localStorage.setItem('ee_lboff','0');EE.lbPush().then(draw)}else{localStorage.setItem('ee_lboff','1');EE.lbRemove().then(draw)}paintTg()};paintTg();
+function draw(){
+ EE.lbGet().then(function(b){
+  var w=EE.lbWeek();var e=b.w===w?b.e:{};
+  var me=EE.lbFirst()+'|'+EE.lbId();
+  var rows=Object.keys(e).map(function(k){var sc=Number(e[k]);var nm=String(k).split('|')[0].replace(/[^A-Za-z\u0600-\u06FF]/g,'').slice(0,14);return {k:k,n:nm,s:sc}}).filter(function(r){return r.n&&isFinite(r.s)&&r.s>0&&r.s<100000}).sort(function(a,c){return c.s-a.s});
+  var loc=EE.lbLocal();
+  if(!rows.length){box.innerHTML='<div style="text-align:center;padding:16px"><div style="font-size:48px">🏁</div><b>No points yet this week.</b><p>Pass a set to be first on the board!</p></div>';return}
+  var med=['🥇','🥈','🥉'];
+  box.innerHTML=rows.slice(0,15).map(function(r,i){return '<div class="cbest" style="'+(r.k===me?'outline:3px solid var(--sun);background:#fff3d6;color:#1f1b4d':'')+'"><span>'+(med[i]||(i+1)+'.')+' '+esc(r.n)+(r.k===me?' (you)':'')+'</span><span>'+r.s+' pts</span></div>'}).join('')+'<p class="mini" style="margin-top:10px">Your points this week: <b>'+loc.pts+'</b></p>';
+ }).catch(function(){box.innerHTML='<p>Could not load the board. Check your internet and try again.</p>'})}
+draw();})();</script></body></html>
