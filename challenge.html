@@ -9,7 +9,8 @@
 <script>EE.header();(function(){
 var U={ol1:['Unit 1 · Egypt\'s Heritage',['ol1-vocab12','ol1-grammar3','ol1-vocab4','ol1-reading']],
 ol2:['Unit 2 · Hands Help, Hearts Care',['ol2-vocab12','ol2-grammar3','ol2-vocab45','ol2-reading']],
-ol3:['Unit 3 · Truth vs. Lies',['ol3-vocab12','ol3-grammar3','ol3-vocab45','ol3-reading']]};
+ol3:['Unit 3 · Truth vs. Lies',['ol3-vocab12','ol3-grammar3','ol3-vocab45','ol3-reading']],
+ol4:['Unit 4 · Save and Shine',['ol4-vocab12','ol4-grammar3','ol4-vocab45','ol4-reading']]};
 var pools={};
 function load(u){if(pools[u])return Promise.resolve(pools[u]);
  return Promise.all(U[u][1].map(function(id){return fetch(id+'.html').then(function(r){return r.text()}).then(function(t){
