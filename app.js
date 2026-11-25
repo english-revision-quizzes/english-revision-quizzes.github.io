@@ -103,11 +103,14 @@ function pickAvatar(cb){
 }
 
 function askName(force,cb){
-  var m=el('div','modal');
-  m.innerHTML='<div class="box"><div style="font-size:54px">👋</div><h2>Welcome!</h2><div style="color:#4a4580">What is your name?</div><input id="nm" maxlength="24" placeholder="Type your name" autocomplete="off"><button class="btn" id="go">Let\'s start!</button>'+(force?'':'<div style="margin-top:12px"><button class="btn ghost" id="cx" style="font-size:15px;padding:8px 18px">Cancel</button></div>')+'</div>';
-  document.body.appendChild(m);
+  var m=el('div','modal');var sel=avIdx();
+  var h='<div class="box" style="max-height:94vh;overflow:auto"><div style="font-size:46px">👋</div><h2>Welcome!</h2><div style="color:#4a4580">What is your name?</div><input id="nm" maxlength="24" placeholder="Type your name" autocomplete="off"><div style="color:#4a4580;margin-bottom:8px;font-weight:700">Pick your avatar</div><div class="avgrid">';
+  for(var i=0;i<AV.length;i++)h+='<button class="avb'+(i===sel?' sel':'')+'" data-i="'+i+'" aria-label="Avatar '+(i+1)+'">'+avSVG(i,64)+'</button>';
+  h+='</div><button class="btn" id="go" style="margin-top:16px">Let\'s start!</button>'+(force?'':'<div style="margin-top:12px"><button class="btn ghost" id="cx" style="font-size:15px;padding:8px 18px">Cancel</button></div>')+'</div>';
+  m.innerHTML=h;document.body.appendChild(m);
+  m.querySelectorAll('.avb').forEach(function(b){b.onclick=function(){sfx.click();sel=+b.getAttribute('data-i');m.querySelectorAll('.avb').forEach(function(x){x.classList.toggle('sel',x===b)})}});
   var inp=$('#nm',m);inp.value=force?'':user();setTimeout(function(){inp.focus()},60);
-  function go(){var v=inp.value.replace(/\s+/g,' ').trim();if(!v){inp.focus();return}store.set('ee_user',v);m.remove();audio();sfx.ok();var fin=function(){if(cb)cb();else location.reload()};if(avIdx()<0)pickAvatar(fin);else fin()}
+  function go(){var v=inp.value.replace(/\s+/g,' ').trim();if(!v){inp.focus();return}store.set('ee_user',v);if(sel<0)sel=0;store.set('ee_av',String(sel));m.remove();audio();sfx.ok();try{lbPush()}catch(e){}if(cb)cb();else location.reload()}
   $('#go',m).onclick=go;inp.onkeydown=function(e){if(e.key==='Enter')go()};
   var cx=$('#cx',m);if(cx)cx.onclick=function(){m.remove()};
 }
@@ -127,7 +130,14 @@ function header(){
   $('#mute').onclick=function(){store.set('ee_mute',muted()?'0':'1');paint();if(!muted()){audio();sfx.click()}};
   $('#who').onclick=function(){askName(false)};
   $('#av').onclick=function(){if(!user()){askName(true,function(){location.reload()});return}pickAvatar(function(){location.reload()})};
-  var f=el('div','foot','Easy English &middot; Dina Fathi');document.body.appendChild(f);
+  try{document.title=document.title.replace(/ [-|] (Easy English|Dina Fathi).*$/,'')+' | Easy English \u00b7 Mrs. DINA FATHI'}catch(e){}
+  var isHome=/(^\/$|index\.html$|^\/[^\/]*\/?$)/.test(location.pathname)&&!/\.html$/.test(location.pathname)||/index\.html$/.test(location.pathname);
+  document.body.classList.toggle('home',isHome);
+  try{var ic=document.createElement('link');ic.rel='icon';ic.href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235b3df5'/%3E%3Ctext x='32' y='43' font-size='30' font-weight='900' text-anchor='middle' fill='%23ffc533' font-family='Arial'%3EEE%3C/text%3E%3C/svg%3E";document.head.appendChild(ic)}catch(e){}
+  try{if(!isHome&&/^(ol|al)/.test(location.pathname.split('/').pop())&&/\-/.test(location.pathname.split('/').pop()||'')){store.set('ee_last',location.pathname.split('/').pop()+'|'+document.title.replace(/ [-|] Easy English.*$/,''))}}catch(e){}
+  var nv=el('nav','bnav');nv.innerHTML='<a href="index.html"><b>🏠</b>Home</a><a href="ol.html"><b>📘</b>OL</a><a href="al.html"><b>📗</b>AL</a><a href="leaderboard.html"><b>🏆</b>Leaders</a><a href="badges.html"><b>🏅</b>Badges</a>';document.body.appendChild(nv);
+  var cur=location.pathname.split('/').pop()||'index.html';nv.querySelectorAll('a').forEach(function(x){if(x.getAttribute('href')===cur||(cur==='index.html'&&false))x.classList.add('on')});
+  var f=el('div','foot','Easy English &middot; Mrs. DINA FATHI');document.body.appendChild(f);
   if(!user())askName(true,function(){location.reload()});
 }
 
