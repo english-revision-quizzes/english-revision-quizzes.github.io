@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My mistakes - Easy English</title><meta name="robots" content="noindex">
+<link rel="stylesheet" href="style.css"></head><body>
+<div class="wrap"><div class="crumbs"><a href="index.html">Home</a> › My mistakes</div><h1 class="title">📝 My mistakes</h1>
+<p class="sub">Questions you missed are saved here. Answer one correctly and it leaves the list.</p>
+<div class="panel" id="mbox"></div></div>
+<script src="app.js"></script>
+<script>EE.header();(function(){
+var box=document.getElementById('mbox');
+function pick(a,n){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a.slice(0,n)}
+function draw(){
+ var m=EE.getMiss(),ks=Object.keys(m);
+ if(!ks.length){box.innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:54px">🎉</div><h2>No mistakes to review!</h2><p>When you miss a question in a set, it will appear here so you can practise it again.</p><a class="mbtn" href="index.html">Back to home</a></div>';return}
+ var g={};ks.forEach(function(k){var s=m[k].src||'Other';(g[s]=g[s]||[]).push(k)});
+ var h='<h2 style="margin-top:0">You have '+ks.length+' question'+(ks.length>1?'s':'')+' to review</h2><div class="mlist">';
+ Object.keys(g).forEach(function(s){h+='<div class="mgroup"><b>'+s.replace(/</g,'&lt;')+'</b><small>'+g[s].length+' question'+(g[s].length>1?'s':'')+'</small></div>'});
+ h+='</div><button class="btn" id="go" style="margin-top:16px;width:100%">Practise 10 now ▶</button>';
+ box.innerHTML=h;
+ document.getElementById('go').onclick=function(){
+  var qs=pick(ks,10).map(function(k){return m[k].q});
+  EE._runSet({title:'My mistakes',questions:qs,review:true,hasNext:false,onDone:function(){draw()}})};
+}
+draw();})();</script></body></html>
