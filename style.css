@@ -211,3 +211,25 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
 .bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
 .bdg{background:var(--soft);border-radius:16px;padding:12px 8px;text-align:center;opacity:.55}.bdg.on{opacity:1;background:#fff3d6;outline:2px solid var(--sun)}
 .bdg .be{font-size:36px}.bdg small{display:block;font-size:12px;color:var(--ink2);margin-top:3px}
+/* dark mode */
+body.dark{--ink:#f1efff;--ink2:#c3bfee;--card:#1f1c3d;--soft:#2b2753;--shadow:0 10px 30px rgba(0,0,0,.45);background:linear-gradient(160deg,#17133a 0%,#1d1850 40%,#10264a 75%,#0a3a3a 100%);background-attachment:fixed}
+body.dark .ucard,body.dark .modal .box,body.dark .qcard,body.dark .result,body.dark .cd,body.dark .dr,body.dark .cr,body.dark .wc .pos,body.dark .opt{background:#1f1c3d;color:var(--ink)}
+body.dark .opt{border-color:#3a3570}.body.dark .opt.sel,body.dark .opt.sel{background:#3a3570}
+body.dark .opt.ok{background:#0f4a33}body.dark .opt.no{background:#5a1a2b}body.dark .typebox{background:#1f1c3d;color:var(--ink)}
+body.dark .typebox.ok{background:#0f4a33}body.dark .typebox.no{background:#5a1a2b}
+body.dark .fb.ok{background:#0f4a33;color:#9af0c6}body.dark .fb.no{background:#5a1a2b;color:#ffb3c4}
+body.dark .btn.ghost{background:#2b2753;color:var(--ink)}
+body.dark .bar{background:#2b2753}
+body.dark .wc,body.dark .co,body.dark .fcard{background:linear-gradient(160deg,#27234f,#1f2a4d);border-color:#3a3570}
+body.dark .imp{background:#3a3114;border-color:var(--sun)}body.dark .tip{background:#0f3a33}body.dark .warn{background:#4a1c2a}
+body.dark .formula,body.dark .line .w,body.dark .cd.hot,body.dark .bdg.on{background:#3a3114;color:var(--ink)}
+body.dark .line{background:#1a1735;border-color:#3a3570}
+body.dark .review .r{background:#3a1c2a}
+body.dark .cbest,body.dark .mgroup,body.dark .bdg{background:#2b2753}
+body.dark .big .go,body.dark .mbtn[style]{color:#1f1b4d}
+body.dark .panel,body.dark .learn{color:var(--ink)}
+body.dark table.vt td,body.dark table.vt th{color:var(--ink)}
+body.dark .chip2{background:#2b2753;color:#c9c0ff}
+.chip#dk{margin-right:2px}
+.qa{background:var(--soft);border-radius:14px;padding:10px 12px;margin:8px 0}.qa b{color:var(--bg1)}
+body.dark .qa b{color:#c9c0ff}
