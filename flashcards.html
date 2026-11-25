@@ -7,7 +7,7 @@
 <div class="panel"><div id="fc"></div></div></div>
 <script src="app.js"></script>
 <script>EE.header();(function(){
-var U={ol1:['Unit 1',['ol1-vocab12','ol1-vocab4']],ol2:['Unit 2',['ol2-vocab12','ol2-vocab45']],ol3:['Unit 3',['ol3-vocab12','ol3-vocab45']]};
+var U={ol1:['Unit 1',['ol1-vocab12','ol1-vocab4']],ol2:['Unit 2',['ol2-vocab12','ol2-vocab45']],ol3:['Unit 3',['ol3-vocab12','ol3-vocab45']],ol4:['Unit 4',['ol4-vocab12','ol4-vocab45']]};
 var cache={};
 function load(u){if(cache[u])return Promise.resolve(cache[u]);
  return Promise.all(U[u][1].map(function(id){return fetch(id+'.html').then(function(r){return r.text()}).then(function(t){
