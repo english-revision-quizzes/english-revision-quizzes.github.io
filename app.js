@@ -10,6 +10,17 @@ function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(M
 function slug(s){return String(s||'').toLowerCase().replace(/\s+/g,' ').trim().replace(/[^a-z0-9\u0600-\u06ff ]/g,'').replace(/ /g,'_')||'guest'}
 function norm(s){return String(s).toLowerCase().replace(/[\u2018\u2019]/g,"'").replace(/[.!?,]+$/,'').replace(/\s+/g,' ').trim()}
 
+
+/* ---------- my mistakes ---------- */
+function qid(q){var s=q.q+'|'+JSON.stringify(q.o||q.a),h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))|0}return 'q'+(h>>>0).toString(36)}
+function mkey(){return 'ee_m_'+slug(user())}
+function getMiss(){var m=null;try{m=JSON.parse(store.get(mkey()))}catch(e){}return (m&&typeof m==='object'&&!m.length)?m:{}}
+function putMiss(m){store.set(mkey(),JSON.stringify(m))}
+function srcLabel(id,title){var m=/^(ol|al)(\d)-/.exec(id||'');var t=String(title||'').replace(/ \u00b7 Set \d+$/,'');return (m?m[1].toUpperCase()+' Unit '+m[2]+' \u00b7 ':'')+t}
+function recordMiss(q,src){var m=getMiss(),k=qid(q);m[k]={q:q,src:src||'',t:Date.now()};var ks=Object.keys(m);if(ks.length>300){ks.sort(function(a,b){return m[a].t-m[b].t});delete m[ks[0]]}putMiss(m)}
+function removeMiss(q){var m=getMiss(),k=qid(q);if(m[k]){delete m[k];putMiss(m)}}
+function missCount(){return Object.keys(getMiss()).length}
+
 /* ---------- sound ---------- */
 var ctx=null;
 function audio(){if(!ctx){try{ctx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(ctx&&ctx.state==='suspended'){ctx.resume()}return ctx}
@@ -58,9 +69,9 @@ function header(){
   var bub=el('div','bubbles');for(var i=0;i<9;i++){var s=document.createElement('span');var z=40+Math.random()*120;s.style.cssText='width:'+z+'px;height:'+z+'px;left:'+Math.random()*100+'%;animation-duration:'+(14+Math.random()*16)+'s;animation-delay:-'+Math.random()*20+'s';bub.appendChild(s)}
   document.body.insertBefore(bub,document.body.firstChild);
   var t=el('div','top');
-  t.innerHTML='<a class="brand" href="index.html"><i>EE</i> Easy English</a><span class="sp"></span><button class="chip" id="who"></button><button class="chip" id="mute" aria-label="Sound"></button>';
+  t.innerHTML='<a class="brand" href="index.html"><i>EE</i> Easy English</a><span class="sp"></span><a class="chip" id="mm" href="mistakes.html" aria-label="My mistakes"></a><button class="chip" id="who"></button><button class="chip" id="mute" aria-label="Sound"></button>';
   document.body.insertBefore(t,bub.nextSibling);
-  function paint(){$('#mute').textContent=muted()?'🔇':'🔊';$('#who').textContent=user()?'👤 '+user():'👤 Sign in'}
+  function paint(){var mc=missCount();$('#mm').textContent='\ud83d\udcdd'+(mc?' '+mc:'');$('#mute').textContent=muted()?'🔇':'🔊';$('#who').textContent=user()?'👤 '+user():'👤 Sign in'}
   paint();
   $('#mute').onclick=function(){store.set('ee_mute',muted()?'0':'1');paint();if(!muted()){audio();sfx.click()}};
   $('#who').onclick=function(){askName(false)};
@@ -86,7 +97,7 @@ function runSet(opts){
   }
   function dots(){var d=$('#dots',root);d.innerHTML='';Q.forEach(function(q,i){var s=el('i',i===idx?'cur':(marks[i]===1?'ok':marks[i]===0?'no':''));d.appendChild(s)});$('#cnt',root).textContent=(Math.min(idx+1,Q.length))+' / '+Q.length}
   function finishQ(q,right,given){
-    marks[idx]=right?1:0;if(right){score++;sfx.ok()}else{missed.push({q:q,given:given});sfx.no()}
+    marks[idx]=right?1:0;if(right){score++;sfx.ok()}else{missed.push({q:q,given:given});sfx.no()};try{if(opts.onAnswer)opts.onAnswer(q,right);else if(right)removeMiss(q);else recordMiss(q,opts.src||opts.title)}catch(e){}
     dots();
     var fb=$('#fb',root);fb.className='fb show '+(right?'ok':'no');
     var ans=answerText(q);
@@ -144,7 +155,7 @@ function runSet(opts){
     $('#dots',root).innerHTML='';$('#cnt',root).textContent='';
     var stars=score===n?'⭐⭐⭐':score>=n-2?'⭐⭐':score>=n/2?'⭐':'';
     var h='<div class="result"><div class="score" style="color:'+(pass?'#14b86a':'#ff6b6b')+'">'+score+' / '+n+'</div><div class="stars">'+(stars||'💪')+'</div>';
-    if(pass){h+='<h2>Amazing, '+esc(name)+'! 🎉</h2><p>All answers correct. '+(opts.hasNext?'The next set is unlocked!':'You finished every set in this section!')+'</p>'}
+    if(pass&&opts.review){h+='<h2>Brilliant, '+esc(name)+'! 🎉</h2><p>All of these are fixed and removed from your list.</p>'}else if(!pass&&opts.review){h+='<h2>Good effort, '+esc(name)+'!</h2><p>The ones you got right are removed from your list. Practice the rest again.</p>'}else if(pass){h+='<h2>Amazing, '+esc(name)+'! 🎉</h2><p>All answers correct. '+(opts.hasNext?'The next set is unlocked!':'You finished every set in this section!')+'</p>'}
     else{h+='<h2>So close, '+esc(name)+'!</h2><p>You need all '+n+' correct to unlock the next set. Look at the answers below, then try again. You can do it! 💪</p>'}
     if(!pass&&missed.length){h+='<div class="review">';missed.forEach(function(m){h+='<div class="r">'+rich(m.q.q)+'<br>✔ <b>'+esc(answerText(m.q))+'</b>'+(m.q.e?'<br><small>'+rich(m.q.e)+'</small>':'')+'</div>'});h+='</div>'}
     h+='<div class="btns">';
@@ -182,15 +193,21 @@ function initSection(cfg){
     });
   }
   function start(i){
-    runSet({title:cfg.title+' · Set '+(i+1),questions:cfg.sets[i],hasNext:i<n-1,
+    runSet({title:cfg.title+' · Set '+(i+1),src:srcLabel(cfg.id,cfg.title),questions:cfg.sets[i],hasNext:i<n-1,
       next:function(){start(i+1)},
       onDone:function(pass,score){var p=getProg(cfg.id,n);if(score>(p.best[i]||0))p.best[i]=score;var was=p.pass[i];if(pass){p.pass[i]=true;if(i<n-1&&!p.pass[i+1]&&!was)setTimeout(sfx.unlock,900)}saveProg(cfg.id,p);render()}});
   }
   render();
 }
 
+
+/* ---------- exam countdown ---------- */
+var EXAMS=[{name:'English AL',date:[2026,11,30],label:'Monday 30 November 2026',em:'\ud83d\udcd7'},{name:'English OL',date:[2026,12,9],label:'Wednesday 9 December 2026',em:'\ud83d\udcd8'}];
+function daysTo(d){var n=new Date();var a=Date.UTC(n.getFullYear(),n.getMonth(),n.getDate());var b=Date.UTC(d[0],d[1]-1,d[2]);return Math.round((b-a)/864e5)}
+function countdown(sel,only){var m=$(sel);if(!m)return;var h='<div class="cdgrid">';EXAMS.forEach(function(x){if(only&&x.name!==only)return;var n=daysTo(x.date);var big,sm;if(n>1){big=n;sm='days to go'}else if(n===1){big='1';sm='day to go'}else if(n===0){big='\ud83d\udd25';sm='Exam day! Good luck!'}else{big='\u2705';sm='Exam finished'}h+='<div class="cd'+(n>=0&&n<=3?' hot':'')+'"><div class="cde">'+x.em+'</div><div class="cdn">'+big+'</div><div class="cds">'+sm+'</div><div class="cdt">Grade 10 \u00b7 '+x.name+'</div><div class="cdd">'+x.label+'</div></div>'});m.innerHTML=h+'</div>'}
+
 /* ---------- welcome text on home ---------- */
 function greet(){var g=$('#greet');if(g&&user()){g.innerHTML='Welcome back, <span class="welcome-name">'+esc(user())+'</span>! 🌟'}}
 
-window.EE={header:header,initSection:initSection,getProg:getProg,doneCount:doneCount,greet:greet,user:user,say:say,sfx:sfx,_runSet:runSet};
+window.EE={countdown:countdown,getMiss:getMiss,missCount:missCount,removeMiss:removeMiss,recordMiss:recordMiss,header:header,initSection:initSection,getProg:getProg,doneCount:doneCount,greet:greet,user:user,say:say,sfx:sfx,_runSet:runSet};
 })();
