@@ -72,7 +72,7 @@ function header(){
 var CHEER_OK=['Great job','Perfect','Brilliant','Well done','Excellent','Superstar','Nice one','You got it'];
 var CHEER_NO=['Almost','Not quite','Keep going','Good try','Don\'t worry'];
 function pick(a){return a[Math.floor(Math.random()*a.length)]}
-function kindLabel(t){return {mcq:'Choose',tf:'True or False',type:'Type the answer',order:'Put in order'}[t]||'Question'}
+function kindLabel(t){return {mcq:'Choose',tf:'True or False',type:'Type the answer',order:'Put in order',multi:'Pick TWO'}[t]||'Question'}
 
 function runSet(opts){
   /* opts: {title, questions, onDone(passed,score)} */
@@ -93,7 +93,7 @@ function runSet(opts){
     fb.innerHTML=(right?'✅ '+pick(CHEER_OK)+', '+esc(name)+'!':'❌ '+pick(CHEER_NO)+', '+esc(name)+'. Correct answer: <b>'+esc(ans)+'</b>')+(q.e?'<span class="why">'+rich(q.e)+'</span>':'');
     var nx=$('#nx',root);nx.style.display='block';$('button',nx).textContent=idx===Q.length-1?'See my result':'Next ➜';$('button',nx).focus&&$('button',nx).focus();
   }
-  function answerText(q){if(q.t==='mcq')return q.o[0];if(q.t==='tf')return q.a?'True':'False';return String(q.a).split('|')[0]}
+  function answerText(q){if(q.t==='multi')return q.o[0]+' + '+q.o[1];if(q.t==='mcq')return q.o[0];if(q.t==='tf')return q.a?'True':'False';return String(q.a).split('|')[0]}
   function show(){
     dots();var q=Q[idx];var b=$('#qb',root);
     b.innerHTML='<div class="qcard"><span class="qkind">'+kindLabel(q.t)+'</span><div class="qtext">'+rich(q.q)+'</div><div id="area"></div><div class="fb" id="fb"></div></div><div class="qnext" id="nx" style="display:none"><button class="btn alt">Next ➜</button></div>';
@@ -105,6 +105,15 @@ function runSet(opts){
         var all=wrap.querySelectorAll('.opt');for(var i=0;i<all.length;i++){all[i].disabled=true}
         os.forEach(function(x,i){if(x.c)all[i].classList.add('ok')});if(!o.c)bt.classList.add('no');finishQ(q,o.c,o.t)};wrap.appendChild(bt)});
       area.appendChild(wrap);
+    }else if(q.t==='multi'){
+      var mo=shuffle(q.o.map(function(t,i){return {t:t,c:i<2}}));var mw=el('div','opts multi');var sel=[];
+      var mchk=el('button','btn');mchk.textContent='Check ✔';mchk.disabled=true;mchk.style.marginTop='14px';
+      var hint=el('div','mini');hint.style.margin='4px 0 10px';hint.textContent='Tap the TWO correct answers.';
+      mo.forEach(function(o){var bt=el('button','opt');bt.textContent=o.t;bt.onclick=function(){sfx.click();var k=sel.indexOf(o);if(k>-1){sel.splice(k,1);bt.classList.remove('sel')}else if(sel.length<2){sel.push(o);bt.classList.add('sel')}mchk.disabled=sel.length!==2};o.b=bt;mw.appendChild(bt)});
+      mchk.onclick=function(){var all=mw.querySelectorAll('.opt');for(var i=0;i<all.length;i++){all[i].disabled=true}
+        var right=sel.length===2&&sel.every(function(x){return x.c});mo.forEach(function(x){if(x.c)x.b.classList.add('ok');else if(sel.indexOf(x)>-1)x.b.classList.add('no');x.b.classList.remove('sel')});
+        mchk.style.display='none';finishQ(q,right,sel.map(function(x){return x.t}).join(' + '))};
+      area.appendChild(hint);area.appendChild(mw);area.appendChild(mchk);
     }else if(q.t==='tf'){
       var w2=el('div','opts tf');[['True',true],['False',false]].forEach(function(p){var bt=el('button','opt');bt.textContent=p[0];bt.onclick=function(){
         var all=w2.querySelectorAll('.opt');for(var i=0;i<all.length;i++){all[i].disabled=true}
