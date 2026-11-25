@@ -23,7 +23,7 @@ function draw(){var h='';Object.keys(U).forEach(function(u){var c=getC(u);
  document.querySelectorAll('[data-u]').forEach(function(b){b.onclick=function(){var u=b.getAttribute('data-u');b.textContent='Loading...';
   load(u).then(function(P){var qs=pick(P,10);
    EE._runSet({title:'Challenge · '+U[u][0].split(' · ')[0],src:'Challenge · '+U[u][0].split(' · ')[0],challenge:true,questions:qs,hasNext:false,
-    onDone:function(pass,score,el,bonus){var c=getC(u);c.runs=(c.runs||0)+1;c.stars=(c.stars||0)+bonus;
+    onDone:function(pass,score,el,bonus){EE.addPoints(score+bonus*3);var c=getC(u);c.runs=(c.runs||0)+1;c.stars=(c.stars||0)+bonus;
      if(c.best==null||score>c.best||(score===c.best&&el<c.bt)){c.best=score;c.bt=el}
      localStorage.setItem(ck(u),JSON.stringify(c));draw()}})
   }).catch(function(){b.textContent='Could not load. Try again.'})}})}
