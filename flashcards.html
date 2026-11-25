@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flashcards - Easy English</title><meta name="robots" content="noindex">
+<link rel="stylesheet" href="style.css"></head><body>
+<div class="wrap"><div class="crumbs"><a href="index.html">Home</a> › Flashcards</div><h1 class="title">🃏 Flashcards</h1>
+<p class="sub">Look at the word, think of the meaning, then tap the card to check. Tell us if you knew it!</p>
+<div class="panel"><div id="fc"></div></div></div>
+<script src="app.js"></script>
+<script>EE.header();(function(){
+var U={ol1:['Unit 1',['ol1-vocab12','ol1-vocab4']],ol2:['Unit 2',['ol2-vocab12','ol2-vocab45']],ol3:['Unit 3',['ol3-vocab12','ol3-vocab45']]};
+var cache={};
+function load(u){if(cache[u])return Promise.resolve(cache[u]);
+ return Promise.all(U[u][1].map(function(id){return fetch(id+'.html').then(function(r){return r.text()}).then(function(t){
+  var d=new DOMParser().parseFromString(t,'text/html');var out=[];
+  d.querySelectorAll('.tp[data-pane="0"] .wc,.tp[data-pane="2"] .wc').forEach(function(c){
+   var wd=c.querySelector('.wd'),w=wd?wd.getAttribute('data-w')||'':'';
+   var b=c.querySelector('.say');var word=b?b.getAttribute('data-say'):(wd?wd.textContent.trim():'');
+   var pos=c.querySelector('.pos');
+   if(!word)return;
+   out.push({w:word,pos:pos?pos.textContent:'',em:(c.querySelector('.em')||{}).textContent||'',mn:(c.querySelector('.mn')||{}).textContent||'',ar:(c.querySelector('.ar')||{}).textContent||''})});
+  return out})})).then(function(a){var all=[].concat.apply([],a),seen={},r=[];all.forEach(function(x){if(!seen[x.w]){seen[x.w]=1;r.push(x)}});cache[u]=r;return r})}
+function key(u){return 'ee_f_'+(EE.user()||'x').toLowerCase().replace(/[^a-z0-9]+/g,'_')+'_'+u}
+function known(u){try{return JSON.parse(localStorage.getItem(key(u)))||{}}catch(e){return {}}}
+function setKnown(u,k){localStorage.setItem(key(u),JSON.stringify(k))}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+var box=document.getElementById('fc');
+function menu(){
+ var h='';var ps=Object.keys(U).map(function(u){return load(u).then(function(c){return [u,c]})});
+ Promise.all(ps).then(function(rs){
+  rs.forEach(function(r){var u=r[0],c=r[1],k=known(u);var n=c.filter(function(x){return k[x.w]}).length;
+   h+='<div style="margin-bottom:14px"><button class="btn" data-u="'+u+'" style="width:100%">🃏 '+U[u][0]+' words</button><div class="mini" style="margin-top:6px">'+n+' of '+c.length+' words marked "I know it"</div><div class="bar"><b style="width:'+Math.round(n/Math.max(1,c.length)*100)+'%"></b></div></div>'});
+  box.innerHTML=h;
+  box.querySelectorAll('[data-u]').forEach(function(b){b.onclick=function(){start(b.getAttribute('data-u'))}})
+ }).catch(function(){box.innerHTML='<p>Could not load the words. Check your internet and try again.</p>'})}
+function start(u){
+ load(u).then(function(c){var k=known(u);var todo=c.filter(function(x){return !k[x.w]});
+  if(!todo.length){todo=c;k={};setKnown(u,k)}
+  var deck=shuffle(todo).slice(0,10);run(u,deck,k)})}
+function run(u,deck,k){
+ var i=0,yes=0,again=[];
+ function card(){
+  if(i>=deck.length){return done()}
+  var c=deck[i];
+  box.innerHTML='<div class="mini" style="text-align:center">Card '+(i+1)+' of '+deck.length+'</div><div class="bar"><b style="width:'+Math.round(i/deck.length*100)+'%"></b></div>'
+   +'<div class="fcard" id="fcard"><div class="fem">'+esc(c.em)+'</div><div class="fw">'+esc(c.w)+(c.pos?' <small>'+esc(c.pos)+'</small>':'')+' <button class="say" id="fsay" aria-label="Listen">🔊</button></div><div class="fback" id="fback" style="display:none"><div class="fm">'+esc(c.mn)+'</div><div class="far">'+esc(c.ar)+'</div></div><div class="mini" id="ftap">Tap the card to see the meaning</div></div>'
+   +'<div class="fbtns" id="fb" style="display:none"><button class="btn bad" id="no">✖ I don\'t know it</button><button class="btn" id="yes">✔ I know it</button></div>';
+  var fc=document.getElementById('fcard');
+  document.getElementById('fsay').onclick=function(e){e.stopPropagation();EE.say(c.w)};
+  fc.onclick=function(){document.getElementById('fback').style.display='block';document.getElementById('ftap').style.display='none';document.getElementById('fb').style.display='flex';EE.say(c.w)};
+  document.getElementById('yes').onclick=function(){k[c.w]=1;yes++;setKnown(u,k);EE.sfx.ok();i++;card()};
+  document.getElementById('no').onclick=function(){delete k[c.w];again.push(c);setKnown(u,k);EE.sfx.no();i++;card()};
+ }
+ function done(){
+  var h='<div class="result"><div class="score" style="color:#14b86a">'+yes+' / '+deck.length+'</div><div class="stars">'+(yes===deck.length?'🌟':'💪')+'</div><h2>'+(yes===deck.length?'Well done, '+esc(EE.user()||'friend')+'!':'Good practice!')+'</h2><p>'+(again.length?'Words to practise again: <b>'+again.map(function(x){return esc(x.w)}).join(', ')+'</b>':'You knew all of them!')+'</p><div class="btns">';
+  if(again.length)h+='<button class="btn" id="ag">Practise these again 🔁</button>';
+  h+='<button class="btn" id="nx">New 10 cards ➜</button><button class="btn ghost" id="bk">Back</button></div></div>';
+  box.innerHTML=h;
+  var ag=document.getElementById('ag');if(ag)ag.onclick=function(){run(u,shuffle(again),k)};
+  document.getElementById('nx').onclick=function(){start(u)};document.getElementById('bk').onclick=menu};
+ card();}
+menu();})();</script></body></html>
