@@ -224,7 +224,7 @@ function lbFirst(){var n=(user()||'').trim().split(/\s+/)[0]||'';return n.replac
 function lbId(){var id=store.get('ee_lbid');if(!id){id=Math.random().toString(36).slice(2,8);store.set('ee_lbid',id)}return id}
 function lbOff(){return store.get('ee_lboff')==='1'}
 function lbParse(t){var i=t.search(/<!doctype/i);if(i>-1)t=t.slice(0,i);var o=JSON.parse(t);if(!o||typeof o!=='object'||typeof o.e!=='object'||o.e===null)o={w:'',e:{}};return o}
-function lbGet(){return fetch(LB_URL,{cache:'no-store'}).then(function(r){return r.text()}).then(lbParse)}
+function lbGet(){return fetch(LB_URL+'?_='+Date.now()+Math.random().toString(36).slice(2,6),{cache:'no-store'}).then(function(r){return r.text()}).then(lbParse)}
 function lbKey(){return 'ee_w_'+slug(user())}
 function lbLocal(){var o=null;try{o=JSON.parse(store.get(lbKey()))}catch(e){}var w=lbWeek();if(!o||o.w!==w)o={w:w,pts:0};return o}
 function lbPush(){
