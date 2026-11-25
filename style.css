@@ -142,3 +142,29 @@ ul.pts li{margin:6px 0}
 .review .r b{color:var(--good)}
 .result .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
 canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
+/* learn panel */
+.learn .tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 2px 6px;margin:6px -4px 0;scrollbar-width:thin}
+.learn .tb{flex:0 0 auto;border:0;border-radius:999px;padding:9px 14px;font-weight:800;font-size:14.5px;background:var(--soft);color:var(--bg1);cursor:pointer;white-space:nowrap}
+.learn .tb.on{background:linear-gradient(135deg,#5b3df5,#2e8bff);color:#fff;box-shadow:0 4px 12px rgba(91,61,245,.35)}
+.learn .tp{display:none;animation:tpin .3s}.learn .tp.on{display:block}
+@keyframes tpin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.learn .tp h3{display:none}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:10px}
+.wc{position:relative;border-radius:20px;padding:14px 14px 12px;background:linear-gradient(160deg,#f3f1ff,#e9f7ff);border:2px solid #e2dcff;cursor:pointer;transition:transform .15s}
+.wc:nth-child(4n+2){background:linear-gradient(160deg,#fff4e6,#ffeef3);border-color:#ffe0c9}
+.wc:nth-child(4n+3){background:linear-gradient(160deg,#e9fbf3,#eaf6ff);border-color:#c9f0de}
+.wc:nth-child(4n){background:linear-gradient(160deg,#fffbe0,#fff0f6);border-color:#ffeaa6}
+.wc:hover{transform:translateY(-3px)}.wc.pop{transform:scale(.96)}
+.wc .em{font-size:40px;line-height:1.1}
+.wc .wd{font-weight:900;font-size:18px;color:var(--ink);margin-top:4px}
+.wc .pos{font-size:12px;font-weight:800;background:#fff;border-radius:999px;padding:1px 8px;margin-left:6px;color:var(--bg1)}
+.wc .mn{font-size:15px;color:var(--ink2);margin-top:4px}
+.wc .ar{direction:rtl;text-align:right;font-weight:800;color:var(--coral);font-size:18px;margin-top:6px}
+.sygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:10px}
+.sy{background:var(--soft);border-radius:16px;padding:10px 12px}
+.sy .sw{font-weight:900;font-size:18px}
+.sy small{display:inline-block;font-size:11px;font-weight:800;border-radius:999px;padding:1px 8px;margin-right:6px;color:#fff}
+.sy .s1 small{background:var(--good)}.sy .s2 small{background:var(--bad)}
+.sy .s1,.sy .s2{margin-top:4px;font-size:15px}
+.learn .ex,.learn ul.pts li,.learn .tip{position:relative}
+.learn .formula .say{margin-left:8px}
