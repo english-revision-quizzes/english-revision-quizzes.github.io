@@ -215,3 +215,4 @@ function greet(){var g=$('#greet');if(g&&user()){g.innerHTML='Welcome back, <spa
 
 window.EE={countdown:countdown,getMiss:getMiss,missCount:missCount,removeMiss:removeMiss,recordMiss:recordMiss,header:header,initSection:initSection,getProg:getProg,doneCount:doneCount,greet:greet,user:user,say:say,sfx:sfx,_runSet:runSet};
 })();
+/* build 3 */
