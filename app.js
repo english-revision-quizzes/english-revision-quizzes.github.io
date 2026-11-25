@@ -46,7 +46,7 @@ function doneCount(sec,n){var p=getProg(sec,n);return p.pass.slice(0,n).filter(B
 
 function askName(force,cb){
   var m=el('div','modal');
-  m.innerHTML='<div class="box"><div style="font-size:54px">👋</div><h2>Welcome!</h2><div class="ar" style="font-weight:700;margin-bottom:2px">أهلاً بيكي</div><div style="color:#4a4580">What is your name?</div><input id="nm" maxlength="24" placeholder="Type your name" autocomplete="off"><button class="btn" id="go">Let\'s start!</button>'+(force?'':'<div style="margin-top:12px"><button class="btn ghost" id="cx" style="font-size:15px;padding:8px 18px">Cancel</button></div>')+'</div>';
+  m.innerHTML='<div class="box"><div style="font-size:54px">👋</div><h2>Welcome!</h2><div style="color:#4a4580">What is your name?</div><input id="nm" maxlength="24" placeholder="Type your name" autocomplete="off"><button class="btn" id="go">Let\'s start!</button>'+(force?'':'<div style="margin-top:12px"><button class="btn ghost" id="cx" style="font-size:15px;padding:8px 18px">Cancel</button></div>')+'</div>';
   document.body.appendChild(m);
   var inp=$('#nm',m);inp.value=force?'':user();setTimeout(function(){inp.focus()},60);
   function go(){var v=inp.value.replace(/\s+/g,' ').trim();if(!v){inp.focus();return}store.set('ee_user',v);m.remove();audio();sfx.ok();if(cb)cb();else location.reload()}
