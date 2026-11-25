@@ -168,3 +168,5 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
 .sy .s1,.sy .s2{margin-top:4px;font-size:15px}
 .learn .ex,.learn ul.pts li,.learn .tip{position:relative}
 .learn .formula .say{margin-left:8px}
+.learn li.chips{list-style:none;margin-left:-22px;display:flex;flex-wrap:wrap;gap:8px}
+.chip2{border:0;border-radius:999px;background:var(--soft);color:var(--bg1);font-weight:800;font-size:15px;padding:7px 12px;cursor:pointer}.chip2:active{transform:scale(.94);background:#e2dcff}
