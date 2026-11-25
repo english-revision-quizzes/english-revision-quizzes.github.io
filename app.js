@@ -55,12 +55,59 @@ function getProg(sec,n){var p=null;try{p=JSON.parse(store.get(pkey(sec)))}catch(
 function saveProg(sec,p){store.set(pkey(sec),JSON.stringify(p))}
 function doneCount(sec,n){var p=getProg(sec,n);return p.pass.slice(0,n).filter(Boolean).length}
 
+
+/* ---------- avatars ---------- */
+var AV=[
+ {bg:'#ffd6e7',skin:'#f6d2b5',hj:'#e8508a',top:'#ffb347'},
+ {bg:'#d7f5ee',skin:'#8d5a3b',hj:'#1aa78d',top:'#ffe066'},
+ {bg:'#e1dcff',skin:'#e8b98f',hj:'#6b4de0',top:'#ff7ac3'},
+ {bg:'#fff0c9',skin:'#c68b59',hj:'#f08a24',top:'#3aa0ff'},
+ {bg:'#d9ecff',skin:'#5e3a26',hj:'#2e7bd6',top:'#ffc533'},
+ {bg:'#ffe0d9',skin:'#f1c9a5',hj:'#d9453d',top:'#2fd6a1'},
+ {bg:'#ffe9f4',skin:'#f6d2b5',hair:'#3b2418',st:'long',top:'#ff7ac3'},
+ {bg:'#e3f8e9',skin:'#c68b59',hair:'#1c1412',st:'bun',top:'#2fd6a1'},
+ {bg:'#fff1d6',skin:'#e8b98f',hair:'#a5602a',st:'pony',top:'#3aa0ff'},
+ {bg:'#e6e2ff',skin:'#5e3a26',hair:'#140e0c',st:'curly',top:'#ffc533'},
+ {bg:'#d9f1ff',skin:'#f1c9a5',hair:'#e0a93a',st:'bob',top:'#ff6b6b'},
+ {bg:'#ffe3e3',skin:'#8d5a3b',hair:'#2a1a14',st:'bob',top:'#6b4de0'}
+];
+function avSVG(i,sz){
+ var a=AV[(i>=0&&i<AV.length)?i:0],b='';
+ b+='<circle cx="50" cy="50" r="50" fill="'+a.bg+'"/>';
+ if(a.hj){b+='<ellipse cx="50" cy="55" rx="35" ry="40" fill="'+a.hj+'"/>'}
+ else if(a.st==='long'){b+='<path d="M20 100 Q8 50 28 30 Q50 8 72 30 Q92 50 80 100Z" fill="'+a.hair+'"/>'}
+ else if(a.st==='pony'){b+='<ellipse cx="50" cy="48" rx="27" ry="30" fill="'+a.hair+'"/><ellipse cx="76" cy="64" rx="10" ry="22" fill="'+a.hair+'" transform="rotate(-20 76 64)"/>'}
+ else if(a.st==='bun'){b+='<circle cx="50" cy="15" r="12" fill="'+a.hair+'"/>'}
+ else if(a.st==='curly'){[[22,40],[30,26],[44,20],[58,20],[72,26],[80,40],[18,56],[84,56]].forEach(function(c){b+='<circle cx="'+c[0]+'" cy="'+c[1]+'" r="12" fill="'+a.hair+'"/>'})}
+ b+='<path d="M14 100 Q18 78 50 76 Q82 78 86 100Z" fill="'+a.top+'"/>';
+ if(a.hj){b+='<path d="M22 100 Q22 80 50 79 Q78 80 78 100Z" fill="'+a.hj+'"/>'}
+ b+='<ellipse cx="50" cy="54" rx="21" ry="24" fill="'+a.skin+'"/>';
+ if(a.hj){b+='<path d="M27 50 Q30 26 50 25 Q70 26 73 50 Q66 38 50 37 Q34 38 27 50Z" fill="'+a.hj+'"/>'}
+ else if(a.st==='bob'){b+='<path d="M24 62 Q18 28 50 26 Q82 28 76 62 Q76 40 50 38 Q24 40 24 62Z" fill="'+a.hair+'"/>'}
+ else{b+='<path d="M28 48 Q32 28 50 28 Q68 28 72 48 Q60 36 50 38 Q40 36 28 48Z" fill="'+a.hair+'"/>'}
+ b+='<circle cx="42" cy="56" r="2.8" fill="#2b1d1a"/><circle cx="58" cy="56" r="2.8" fill="#2b1d1a"/>';
+ b+='<circle cx="35" cy="63" r="4" fill="#ff7a8a" opacity=".35"/><circle cx="65" cy="63" r="4" fill="#ff7a8a" opacity=".35"/>';
+ b+='<path d="M43 65 Q50 72 57 65" stroke="#2b1d1a" stroke-width="2.4" fill="none" stroke-linecap="round"/>';
+ return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="'+sz+'" height="'+sz+'" style="border-radius:50%;display:inline-block;vertical-align:middle" aria-hidden="true">'+b+'</svg>';
+}
+function avIdx(){var v=store.get('ee_av');return v==null||v===''?-1:(+v)}
+function pickAvatar(cb){
+ var m=el('div','modal');var cur=avIdx();
+ var h='<div class="box"><h2>Pick your avatar</h2><div style="color:#4a4580;margin-bottom:10px">Choose the one you like. You can change it any time.</div><div class="avgrid">';
+ for(var i=0;i<AV.length;i++)h+='<button class="avb'+(i===cur?' sel':'')+'" data-i="'+i+'" aria-label="Avatar '+(i+1)+'">'+avSVG(i,64)+'</button>';
+ h+='</div><button class="btn" id="avok" style="margin-top:14px">Done</button></div>';
+ m.innerHTML=h;document.body.appendChild(m);
+ var sel=cur;
+ m.querySelectorAll('.avb').forEach(function(b){b.onclick=function(){sfx.click();sel=+b.getAttribute('data-i');m.querySelectorAll('.avb').forEach(function(x){x.classList.toggle('sel',x===b)});store.set('ee_av',String(sel))}});
+ $('#avok',m).onclick=function(){if(sel<0){sel=0;store.set('ee_av','0')}m.remove();sfx.ok();try{lbPush()}catch(e){}if(cb)cb();else{var d=$('#av');if(d)d.innerHTML=avSVG(avIdx(),28)}};
+}
+
 function askName(force,cb){
   var m=el('div','modal');
   m.innerHTML='<div class="box"><div style="font-size:54px">👋</div><h2>Welcome!</h2><div style="color:#4a4580">What is your name?</div><input id="nm" maxlength="24" placeholder="Type your name" autocomplete="off"><button class="btn" id="go">Let\'s start!</button>'+(force?'':'<div style="margin-top:12px"><button class="btn ghost" id="cx" style="font-size:15px;padding:8px 18px">Cancel</button></div>')+'</div>';
   document.body.appendChild(m);
   var inp=$('#nm',m);inp.value=force?'':user();setTimeout(function(){inp.focus()},60);
-  function go(){var v=inp.value.replace(/\s+/g,' ').trim();if(!v){inp.focus();return}store.set('ee_user',v);m.remove();audio();sfx.ok();if(cb)cb();else location.reload()}
+  function go(){var v=inp.value.replace(/\s+/g,' ').trim();if(!v){inp.focus();return}store.set('ee_user',v);m.remove();audio();sfx.ok();var fin=function(){if(cb)cb();else location.reload()};if(avIdx()<0)pickAvatar(fin);else fin()}
   $('#go',m).onclick=go;inp.onkeydown=function(e){if(e.key==='Enter')go()};
   var cx=$('#cx',m);if(cx)cx.onclick=function(){m.remove()};
 }
@@ -71,14 +118,15 @@ function header(){
   var bub=el('div','bubbles');for(var i=0;i<9;i++){var s=document.createElement('span');var z=40+Math.random()*120;s.style.cssText='width:'+z+'px;height:'+z+'px;left:'+Math.random()*100+'%;animation-duration:'+(14+Math.random()*16)+'s;animation-delay:-'+Math.random()*20+'s';bub.appendChild(s)}
   document.body.insertBefore(bub,document.body.firstChild);
   var t=el('div','top');
-  t.innerHTML='<a class="brand" href="index.html"><i>EE</i> Easy English</a><span class="sp"></span><button class="chip" id="dk" aria-label="Dark mode"></button><a class="chip" id="mm" href="mistakes.html" aria-label="My mistakes"></a><button class="chip" id="who"></button><button class="chip" id="mute" aria-label="Sound"></button>';
+  t.innerHTML='<a class="brand" href="index.html"><i>EE</i> Easy English</a><span class="sp"></span><button class="chip" id="av" aria-label="Choose avatar"></button><button class="chip" id="dk" aria-label="Dark mode"></button><a class="chip" id="mm" href="mistakes.html" aria-label="My mistakes"></a><button class="chip" id="who"></button><button class="chip" id="mute" aria-label="Sound"></button>';
   document.body.insertBefore(t,bub.nextSibling);
-  function paint(){$('#dk').textContent=store.get('ee_dark')==='1'?'\u2600\ufe0f':'\ud83c\udf19';var mc=missCount();$('#mm').textContent='\ud83d\udcdd'+(mc?' '+mc:'');$('#mute').textContent=muted()?'🔇':'🔊';$('#who').textContent=user()?'👤 '+user():'👤 Sign in'}
+  function paint(){$('#av').innerHTML=avIdx()>=0?avSVG(avIdx(),24):'\ud83d\ude42';$('#dk').textContent=store.get('ee_dark')==='1'?'\u2600\ufe0f':'\ud83c\udf19';var mc=missCount();$('#mm').textContent='\ud83d\udcdd'+(mc?' '+mc:'');$('#mute').textContent=muted()?'🔇':'🔊';$('#who').textContent=user()?user():'Sign in'}
   $('#dk').onclick=function(){store.set('ee_dark',store.get('ee_dark')==='1'?'0':'1');applyDark();paint()};
   paint();
   try{touchDay()}catch(e){}
   $('#mute').onclick=function(){store.set('ee_mute',muted()?'0':'1');paint();if(!muted()){audio();sfx.click()}};
   $('#who').onclick=function(){askName(false)};
+  $('#av').onclick=function(){if(!user()){askName(true,function(){location.reload()});return}pickAvatar(function(){location.reload()})};
   var f=el('div','foot','Easy English &middot; Dina Fathi');document.body.appendChild(f);
   if(!user())askName(true,function(){location.reload()});
 }
@@ -223,17 +271,17 @@ function lbWeek(){var d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((
 function lbFirst(){var n=(user()||'').trim().split(/\s+/)[0]||'';return n.replace(/[^A-Za-z\u0600-\u06FF]/g,'').slice(0,14)}
 function lbId(){var id=store.get('ee_lbid');if(!id){id=Math.random().toString(36).slice(2,8);store.set('ee_lbid',id)}return id}
 function lbOff(){return store.get('ee_lboff')==='1'}
-function lbParse(t){var i=t.search(/<!doctype/i);if(i>-1)t=t.slice(0,i);var o=JSON.parse(t);if(!o||typeof o!=='object'||typeof o.e!=='object'||o.e===null)o={w:'',e:{}};return o}
+function lbParse(t){var i=t.search(/<!doctype/i);if(i>-1)t=t.slice(0,i);var o=JSON.parse(t);if(!o||typeof o!=='object'||typeof o.e!=='object'||o.e===null)o={w:'',e:{}};if(!o.a||typeof o.a!=='object')o.a={};return o}
 function lbGet(){return fetch(LB_URL+'?_='+Date.now()+Math.random().toString(36).slice(2,6),{cache:'no-store'}).then(function(r){return r.text()}).then(lbParse)}
 function lbKey(){return 'ee_w_'+slug(user())}
 function lbLocal(){var o=null;try{o=JSON.parse(store.get(lbKey()))}catch(e){}var w=lbWeek();if(!o||o.w!==w)o={w:w,pts:0};return o}
 function lbPush(){
   var nm=lbFirst();if(!nm||lbOff())return Promise.resolve();var loc=lbLocal();if(!loc.pts)return Promise.resolve();
-  return lbGet().then(function(b){var w=lbWeek();if(b.w!==w)b={w:w,e:{}};var k=nm+'|'+lbId();b.e[k]=loc.pts;
+  return lbGet().then(function(b){var w=lbWeek();if(b.w!==w)b={w:w,e:{},a:{}};var k=nm+'|'+lbId();b.e[k]=loc.pts;if(avIdx()>=0)b.a[k]=avIdx();
     var ks=Object.keys(b.e);if(ks.length>300){ks.sort(function(a,c){return b.e[a]-b.e[c]});delete b.e[ks[0]]}
     return fetch(LB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)})}).catch(function(){})}
 function addPoints(n){try{if(!user()||!(n>0))return;var o=lbLocal();o.pts+=Math.round(n);store.set(lbKey(),JSON.stringify(o));lbPush()}catch(e){}}
-function lbRemove(){return lbGet().then(function(b){var k=lbFirst()+'|'+lbId();if(b.e[k]!=null){delete b.e[k];return fetch(LB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)})}}).catch(function(){})}
+function lbRemove(){return lbGet().then(function(b){var k=lbFirst()+'|'+lbId();if(b.e[k]!=null){delete b.e[k];delete b.a[k];return fetch(LB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)})}}).catch(function(){})}
 
 /* ---------- exam countdown ---------- */
 var EXAMS=[{name:'English AL',date:[2026,11,30],label:'Monday 30 November 2026',em:'\ud83d\udcd7'},{name:'English OL',date:[2026,12,9],label:'Wednesday 9 December 2026',em:'\ud83d\udcd8'}];
@@ -243,6 +291,6 @@ function countdown(sel,only){var m=$(sel);if(!m)return;var h='<div class="cdgrid
 /* ---------- welcome text on home ---------- */
 function greet(){var g=$('#greet');if(g&&user()){g.innerHTML='Welcome back, <span class="welcome-name">'+esc(user())+'</span>! 🌟'}}
 
-window.EE={addPoints:addPoints,lbGet:lbGet,lbWeek:lbWeek,lbFirst:lbFirst,lbId:lbId,lbOff:lbOff,lbLocal:lbLocal,lbPush:lbPush,lbRemove:lbRemove,bestStreak:bestStreak,curStreak:curStreak,countdown:countdown,getMiss:getMiss,missCount:missCount,removeMiss:removeMiss,recordMiss:recordMiss,header:header,initSection:initSection,getProg:getProg,doneCount:doneCount,greet:greet,user:user,say:say,sfx:sfx,_runSet:runSet};
+window.EE={avSVG:avSVG,avIdx:avIdx,pickAvatar:pickAvatar,addPoints:addPoints,lbGet:lbGet,lbWeek:lbWeek,lbFirst:lbFirst,lbId:lbId,lbOff:lbOff,lbLocal:lbLocal,lbPush:lbPush,lbRemove:lbRemove,bestStreak:bestStreak,curStreak:curStreak,countdown:countdown,getMiss:getMiss,missCount:missCount,removeMiss:removeMiss,recordMiss:recordMiss,header:header,initSection:initSection,getProg:getProg,doneCount:doneCount,greet:greet,user:user,say:say,sfx:sfx,_runSet:runSet};
 })();
 /* build 3 */
