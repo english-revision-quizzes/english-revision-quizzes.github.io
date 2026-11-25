@@ -243,3 +243,69 @@ body.dark .avb.sel{background:#3a3570}
 .avgrid{min-width:0}.avb{min-width:0}
 #who{max-width:120px;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:480px){.top .bt{display:none}.top{gap:6px;padding:10px}.chip{padding:6px 9px}}
+
+/* ===== v5 polish ===== */
+:root{--ink2:#3f3a78}
+body:not(.home):not(.dark){background:linear-gradient(180deg,#312c86 0,#2a2a78 420px,#27316f 100%);background-attachment:fixed}
+body:not(.home) .bubbles{display:none}
+body{padding-bottom:0}
+.hero .by{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);letter-spacing:1.5px;font-size:15px}
+.hero p{font-size:18px;max-width:520px}
+.cont{margin-top:14px;text-decoration:none;background:#fff;color:var(--ink);font-weight:800;border-radius:999px;padding:11px 22px;box-shadow:var(--shadow)}
+.cdwrap{background:rgba(255,255,255,.12);border-radius:26px;padding:14px 12px 16px;margin-top:6px}
+.cdwrap h2{font-size:18px;margin-bottom:10px;letter-spacing:.3px}
+.cdgrid{margin-top:0}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+.tiles a{background:#fff;color:var(--ink);text-decoration:none;font-weight:800;border-radius:20px;padding:16px 10px;text-align:center;box-shadow:var(--shadow);transition:transform .15s;font-size:15.5px}
+.tiles a:hover{transform:translateY(-3px)}.tiles a b{display:block;font-size:30px;margin-bottom:4px}
+body.dark .tiles a{background:#1f1c3d}
+@media(max-width:620px){.tiles{grid-template-columns:1fr 1fr}}
+/* word cards */
+.wgrid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));align-items:stretch}
+.wc{display:flex;flex-direction:column}
+.wc .wd{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.wc .wd .say{margin-left:auto;width:28px;height:28px}
+.wc .pos{margin:0;order:3;flex-basis:auto}
+.wc .mn{color:#2b2760;font-size:15.5px;line-height:1.45;flex:1}
+.wc .ar{margin-top:10px;padding-top:8px;border-top:1px dashed rgba(91,61,245,.25);font-size:21px;color:#e0405a}
+body.dark .wc .mn{color:var(--ink)}
+.ar{font-size:1.08em}
+/* unit + set cards */
+.ucard{border:1px solid rgba(91,61,245,.08)}
+.ucard h3{font-size:20px}
+.set{border-radius:18px;padding:16px 10px}
+.set.locked{background:#d6d3ea;color:#5a557f;box-shadow:inset 0 0 0 2px #c3bfe0}
+.set.locked small{opacity:1}
+.set.done{background:linear-gradient(135deg,#14b86a,#00a0b0)}
+.set.done .big-n::after{content:" ✓";font-size:22px}
+.set.open{box-shadow:0 0 0 4px rgba(255,197,51,.9),0 8px 20px rgba(255,61,129,.35);animation:glow 2s infinite}
+@keyframes glow{50%{box-shadow:0 0 0 7px rgba(255,197,51,.5),0 8px 20px rgba(255,61,129,.35)}}
+@media(min-width:760px){.sets{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
+/* quiz */
+.quiz{background:linear-gradient(180deg,#312c86,#27316f)}
+body.dark .quiz{background:linear-gradient(180deg,#17133a,#10264a)}
+.dots i{height:8px}
+.dots i.cur{background:var(--sun)}
+.qtext{font-size:23px}
+.opt{min-height:56px;padding:14px 18px;border-width:2px;box-shadow:0 2px 0 #e1dcff}
+.opt:hover:not([disabled]){border-color:var(--bg1);background:#f6f4ff}
+@media(max-width:620px){.qtext{font-size:21px}.opt{font-size:18px}.qbody{padding:6px 12px 26px}}
+.result .btns .btn{min-width:150px}
+/* tabs */
+.learn .tabs{-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent);padding-right:30px}
+/* breadcrumbs, titles */
+.crumbs{opacity:1;text-shadow:0 1px 3px rgba(0,0,0,.35)}.crumbs a{opacity:1}
+.sub{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+.title{line-height:1.2}
+/* focus */
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+/* bottom nav */
+.bnav{display:none}
+@media(max-width:700px){
+ body{padding-bottom:72px}
+ .bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(31,27,77,.96);backdrop-filter:blur(10px);padding:6px 4px calc(6px + env(safe-area-inset-bottom));justify-content:space-around;box-shadow:0 -4px 16px rgba(0,0,0,.25)}
+ .bnav a{color:rgba(255,255,255,.8);text-decoration:none;font-size:11.5px;font-weight:700;text-align:center;flex:1;padding:2px 0}
+ .bnav a b{display:block;font-size:21px;line-height:1.2}
+ .bnav a.on{color:var(--sun)}
+ .top .brand .bt{display:none}
+}
