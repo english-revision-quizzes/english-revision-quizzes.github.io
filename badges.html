@@ -11,7 +11,8 @@
 var UN=[{n:1,t:"Egypt's Heritage",s:[['ol1-vocab12',6],['ol1-grammar3',10],['ol1-vocab4',5],['ol1-reading',3]]},
 {n:2,t:'Hands Help, Hearts Care',s:[['ol2-vocab12',6],['ol2-grammar3',10],['ol2-vocab45',6],['ol2-reading',3]]},
 {n:3,t:'Truth vs. Lies',s:[['ol3-vocab12',6],['ol3-grammar3',10],['ol3-vocab45',5],['ol3-reading',3]]},
-{n:4,t:'Save and Shine',s:[['ol4-vocab12',6],['ol4-grammar3',8],['ol4-vocab45',6],['ol4-reading',4]]}];
+{n:4,t:'Save and Shine',s:[['ol4-vocab12',6],['ol4-grammar3',8],['ol4-vocab45',6],['ol4-reading',4]]},
+{n:5,t:'Using Technology at Schools',s:[['ol5-vocab12',6],['ol5-grammar3',8],['ol5-vocab45',6],['ol5-reading',4]]}];
 var name=EE.user();var slug=(name||'x').toLowerCase().replace(/\s+/g,' ').trim().replace(/[^a-z0-9\u0600-\u06ff ]/g,'').replace(/ /g,'_')||'guest';
 var total=0;UN.forEach(function(u){u.done=0;u.tot=0;u.s.forEach(function(x){u.done+=EE.doneCount(x[0],x[1]);u.tot+=x[1]});u.fin=u.done===u.tot;total+=u.done});
 var chal=0,cstars=0,known=0;
