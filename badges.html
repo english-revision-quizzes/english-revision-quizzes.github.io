@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My badges - Easy English</title><meta name="robots" content="noindex">
+<link rel="stylesheet" href="style.css"></head><body>
+<div class="wrap"><div class="crumbs"><a href="index.html">Home</a> › My badges</div><h1 class="title">🏅 My badges</h1>
+<p class="sub" id="bsub">Collect badges as you learn.</p>
+<div class="panel"><div id="bg" class="bgrid"></div></div>
+<div class="panel"><h2 style="margin-top:0">🎓 My certificates</h2><div id="ct"></div></div></div>
+<script src="app.js"></script>
+<script>EE.header();(function(){
+var UN=[{n:1,t:"Egypt's Heritage",s:[['ol1-vocab12',6],['ol1-grammar3',10],['ol1-vocab4',5],['ol1-reading',3]]},
+{n:2,t:'Hands Help, Hearts Care',s:[['ol2-vocab12',6],['ol2-grammar3',10],['ol2-vocab45',6],['ol2-reading',3]]},
+{n:3,t:'Truth vs. Lies',s:[['ol3-vocab12',6],['ol3-grammar3',10],['ol3-vocab45',5],['ol3-reading',3]]}];
+var name=EE.user();var slug=(name||'x').toLowerCase().replace(/\s+/g,' ').trim().replace(/[^a-z0-9\u0600-\u06ff ]/g,'').replace(/ /g,'_')||'guest';
+var total=0;UN.forEach(function(u){u.done=0;u.tot=0;u.s.forEach(function(x){u.done+=EE.doneCount(x[0],x[1]);u.tot+=x[1]});u.fin=u.done===u.tot;total+=u.done});
+var chal=0,cstars=0,known=0;
+var slug2=(name||'x').toLowerCase().replace(/[^a-z0-9]+/g,'_');
+Object.keys(localStorage).forEach(function(k){var v;try{v=JSON.parse(localStorage.getItem(k))}catch(e){return}
+ if(k.indexOf('ee_c_'+slug2+'_')===0&&v){chal+=v.runs||0;cstars+=v.stars||0}
+ if(k.indexOf('ee_f_'+slug2+'_')===0&&v){known+=Object.keys(v).length}});
+var bs=EE.bestStreak();
+var B=[['🌱','First set','Pass your first set',total>=1],['📚','10 sets','Pass 10 sets',total>=10],['🚀','25 sets','Pass 25 sets',total>=25],['🏆','50 sets','Pass 50 sets',total>=50]];
+UN.forEach(function(u){B.push(['🎓','Finished Unit '+u.n,'Pass every set in Unit '+u.n+' ('+u.done+'/'+u.tot+')',u.fin])});
+B.push(['🔥','3 days in a row','Study 3 days in a row',bs>=3],['🔥','5 days in a row','Study 5 days in a row',bs>=5],['🌟','7 days in a row','Study 7 days in a row',bs>=7],
+['⚡','Challenger','Finish a challenge',chal>=1],['💨','Speed star','Earn 5 speed ⚡ in challenges',cstars>=5],['🃏','Word collector','Mark 25 words as "I know it"',known>=25],['🧠','Word master','Mark 100 words as "I know it"',known>=100]);
+var got=B.filter(function(b){return b[3]}).length;
+document.getElementById('bsub').textContent=(name?name+', you have ':'You have ')+got+' of '+B.length+' badges. Your study streak: '+EE.curStreak()+' day'+(EE.curStreak()===1?'':'s')+' 🔥';
+document.getElementById('bg').innerHTML=B.map(function(b){return '<div class="bdg'+(b[3]?' on':'')+'"><div class="be">'+(b[3]?b[0]:'🔒')+'</div><b>'+b[1]+'</b><small>'+b[2]+'</small></div>'}).join('');
+var ct=document.getElementById('ct');
+ct.innerHTML=UN.map(function(u){return '<div class="cbest"><span>Unit '+u.n+' · '+u.t+'</span>'+(u.fin?'<button class="btn" data-c="'+u.n+'" style="padding:8px 14px;font-size:15px">Download ⬇</button>':'<span class="mini">'+u.done+' of '+u.tot+' sets</span>')+'</div>'}).join('');
+ct.querySelectorAll('[data-c]').forEach(function(b){b.onclick=function(){cert(UN[+b.getAttribute('data-c')-1])}});
+function cert(u){
+ var W=1600,H=1130,c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');
+ var gr=g.createLinearGradient(0,0,W,H);gr.addColorStop(0,'#fffdf5');gr.addColorStop(1,'#eef0ff');g.fillStyle=gr;g.fillRect(0,0,W,H);
+ g.strokeStyle='#5b3df5';g.lineWidth=14;g.strokeRect(40,40,W-80,H-80);g.strokeStyle='#ffc533';g.lineWidth=5;g.strokeRect(68,68,W-136,H-136);
+ g.textAlign='center';g.fillStyle='#1f1b4d';
+ g.font='bold 58px Segoe UI,Arial,sans-serif';g.fillText('Easy English by Dina Fathi',W/2,190);
+ g.fillStyle='#5b3df5';g.font='bold 110px Georgia,serif';g.fillText('Certificate',W/2,330);
+ g.fillStyle='#1f1b4d';g.font='40px Segoe UI,Arial,sans-serif';g.fillText('of Achievement',W/2,395);
+ g.font='38px Segoe UI,Arial,sans-serif';g.fillText('This certificate is proudly given to',W/2,520);
+ g.fillStyle='#ef4565';var nm=name||'Student';var fs=120;g.font='bold '+fs+'px Georgia,serif';while(g.measureText(nm).width>W-300&&fs>40){fs-=6;g.font='bold '+fs+'px Georgia,serif'}g.fillText(nm,W/2,665);
+ g.strokeStyle='#ffc533';g.lineWidth=4;g.beginPath();g.moveTo(400,700);g.lineTo(W-400,700);g.stroke();
+ g.fillStyle='#1f1b4d';g.font='40px Segoe UI,Arial,sans-serif';g.fillText('for finishing every set of',W/2,790);
+ g.font='bold 62px Segoe UI,Arial,sans-serif';g.fillText('English OL · Unit '+u.n+': '+u.t,W/2,880);
+ g.font='34px Segoe UI,Arial,sans-serif';g.fillStyle='#4a4580';g.fillText('Grade 10 · '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}),W/2,985);
+ g.font='70px sans-serif';g.fillText('⭐ ⭐ ⭐',W/2,1060);
+ var a=document.createElement('a');a.download='Certificate-Unit'+u.n+'-'+(name||'student').replace(/[^A-Za-z0-9]+/g,'_')+'.png';a.href=c.toDataURL('image/png');document.body.appendChild(a);a.click();a.remove();
+ if(EE.sfx)EE.sfx.win();
+}
+})();</script></body></html>
