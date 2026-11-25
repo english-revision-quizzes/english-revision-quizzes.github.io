@@ -239,3 +239,7 @@ body.dark .quiz{background:linear-gradient(160deg,#17133a 0%,#1d1850 40%,#10264a
 .avb.sel{border-color:var(--bg1);background:#e9e4ff;transform:scale(1.05)}
 #av{padding:4px 6px;line-height:0}
 body.dark .avb.sel{background:#3a3570}
+.avgrid .avb svg{width:100%;height:auto;max-width:64px}
+.avgrid{min-width:0}.avb{min-width:0}
+#who{max-width:120px;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:480px){.top .bt{display:none}.top{gap:6px;padding:10px}.chip{padding:6px 9px}}
