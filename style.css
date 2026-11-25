@@ -311,3 +311,18 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(-
 }
 .sub{margin-bottom:16px}
 .cards{margin-top:20px}
+/* v5b */
+.ucard{padding-top:22px}
+.ustat{position:absolute;top:16px;right:16px;font-size:12px;font-weight:800;border-radius:999px;padding:3px 10px}
+.ustat.new{background:var(--sun);color:var(--ink)}.ustat.prog{background:#e0dcff;color:var(--bg1)}.ustat.fin{background:#d6f7e7;color:#07683b}
+.ucard .ucp{margin-top:2px}
+.ucard .mini{font-size:13.5px}
+.result{position:relative;overflow:hidden;padding:30px 18px 26px}
+.result.win{background:linear-gradient(180deg,#f1fff8,#fff 45%)}
+.result .ring{width:150px;height:150px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--c) calc(var(--p)*1%),#e8e4ff 0)}
+.result .ring .score{width:118px;height:118px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:46px;font-weight:900}
+.result .ring .score small{font-size:20px;font-weight:700;color:var(--ink2);margin-left:3px}
+.result .stars{margin-top:6px;animation:bump .6s}
+.result h2{font-size:28px}
+.result .btn.big{font-size:21px;padding:16px 34px;box-shadow:0 8px 22px rgba(255,61,129,.4)}
+body.dark .result .ring .score,body.dark .result.win{background:#1f1c3d}
