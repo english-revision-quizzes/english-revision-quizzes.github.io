@@ -203,7 +203,7 @@ function initSection(cfg){
   function start(i){
     runSet({title:cfg.title+' · Set '+(i+1),src:srcLabel(cfg.id,cfg.title),questions:cfg.sets[i],hasNext:i<n-1,
       next:function(){start(i+1)},
-      onDone:function(pass,score){var p=getProg(cfg.id,n);if(score>(p.best[i]||0))p.best[i]=score;var was=p.pass[i];if(pass){p.pass[i]=true;if(i<n-1&&!p.pass[i+1]&&!was)setTimeout(sfx.unlock,900)}saveProg(cfg.id,p);render()}});
+      onDone:function(pass,score){var p=getProg(cfg.id,n);if(score>(p.best[i]||0))p.best[i]=score;var was=p.pass[i];if(pass){p.pass[i]=true;if(!was)addPoints(10);if(i<n-1&&!p.pass[i+1]&&!was)setTimeout(sfx.unlock,900)}saveProg(cfg.id,p);render()}});
   }
   render();
 }
@@ -217,6 +217,24 @@ function touchDay(){if(!user())return;var a=getDays(),t=dkey(new Date());if(a.in
 function bestStreak(){var a=getDays().slice().sort(),best=0,cur=0,prev=null;a.forEach(function(k){var p=k.split('-'),d=Date.UTC(+p[0],+p[1]-1,+p[2]);cur=(prev!==null&&d-prev===864e5)?cur+1:1;prev=d;if(cur>best)best=cur});return best}
 function curStreak(){var a=getDays(),n=0,d=new Date();if(a.indexOf(dkey(d))<0)d.setDate(d.getDate()-1);while(a.indexOf(dkey(d))>-1){n++;d.setDate(d.getDate()-1)}return n}
 
+/* ---------- weekly leaderboard (first name + points only) ---------- */
+var LB_URL='https://extendsclass.com/api/json-storage/bin/adafabc';
+function lbWeek(){var d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+1)%7));return dkey(d)}
+function lbFirst(){var n=(user()||'').trim().split(/\s+/)[0]||'';return n.replace(/[^A-Za-z\u0600-\u06FF]/g,'').slice(0,14)}
+function lbId(){var id=store.get('ee_lbid');if(!id){id=Math.random().toString(36).slice(2,8);store.set('ee_lbid',id)}return id}
+function lbOff(){return store.get('ee_lboff')==='1'}
+function lbParse(t){var i=t.search(/<!doctype/i);if(i>-1)t=t.slice(0,i);var o=JSON.parse(t);if(!o||typeof o!=='object'||typeof o.e!=='object'||o.e===null)o={w:'',e:{}};return o}
+function lbGet(){return fetch(LB_URL,{cache:'no-store'}).then(function(r){return r.text()}).then(lbParse)}
+function lbKey(){return 'ee_w_'+slug(user())}
+function lbLocal(){var o=null;try{o=JSON.parse(store.get(lbKey()))}catch(e){}var w=lbWeek();if(!o||o.w!==w)o={w:w,pts:0};return o}
+function lbPush(){
+  var nm=lbFirst();if(!nm||lbOff())return Promise.resolve();var loc=lbLocal();if(!loc.pts)return Promise.resolve();
+  return lbGet().then(function(b){var w=lbWeek();if(b.w!==w)b={w:w,e:{}};var k=nm+'|'+lbId();b.e[k]=loc.pts;
+    var ks=Object.keys(b.e);if(ks.length>300){ks.sort(function(a,c){return b.e[a]-b.e[c]});delete b.e[ks[0]]}
+    return fetch(LB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)})}).catch(function(){})}
+function addPoints(n){try{if(!user()||!(n>0))return;var o=lbLocal();o.pts+=Math.round(n);store.set(lbKey(),JSON.stringify(o));lbPush()}catch(e){}}
+function lbRemove(){return lbGet().then(function(b){var k=lbFirst()+'|'+lbId();if(b.e[k]!=null){delete b.e[k];return fetch(LB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)})}}).catch(function(){})}
+
 /* ---------- exam countdown ---------- */
 var EXAMS=[{name:'English AL',date:[2026,11,30],label:'Monday 30 November 2026',em:'\ud83d\udcd7'},{name:'English OL',date:[2026,12,9],label:'Wednesday 9 December 2026',em:'\ud83d\udcd8'}];
 function daysTo(d){var n=new Date();var a=Date.UTC(n.getFullYear(),n.getMonth(),n.getDate());var b=Date.UTC(d[0],d[1]-1,d[2]);return Math.round((b-a)/864e5)}
@@ -225,6 +243,6 @@ function countdown(sel,only){var m=$(sel);if(!m)return;var h='<div class="cdgrid
 /* ---------- welcome text on home ---------- */
 function greet(){var g=$('#greet');if(g&&user()){g.innerHTML='Welcome back, <span class="welcome-name">'+esc(user())+'</span>! 🌟'}}
 
-window.EE={bestStreak:bestStreak,curStreak:curStreak,countdown:countdown,getMiss:getMiss,missCount:missCount,removeMiss:removeMiss,recordMiss:recordMiss,header:header,initSection:initSection,getProg:getProg,doneCount:doneCount,greet:greet,user:user,say:say,sfx:sfx,_runSet:runSet};
+window.EE={addPoints:addPoints,lbGet:lbGet,lbWeek:lbWeek,lbFirst:lbFirst,lbId:lbId,lbOff:lbOff,lbLocal:lbLocal,lbPush:lbPush,lbRemove:lbRemove,bestStreak:bestStreak,curStreak:curStreak,countdown:countdown,getMiss:getMiss,missCount:missCount,removeMiss:removeMiss,recordMiss:recordMiss,header:header,initSection:initSection,getProg:getProg,doneCount:doneCount,greet:greet,user:user,say:say,sfx:sfx,_runSet:runSet};
 })();
 /* build 3 */
