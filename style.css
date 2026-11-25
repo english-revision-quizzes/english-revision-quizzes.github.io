@@ -187,3 +187,4 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
 .imp h4{margin:0 0 4px;font-size:16px;color:#a86a00}
 .imp ul{margin:4px 0 0;padding-left:20px}.imp li{margin:4px 0}
 .qtext,.opt{unicode-bidi:plaintext;text-align:start}
+.rd{font-size:17px;line-height:1.7;margin:8px 0}.rd b{color:var(--bg1)}
