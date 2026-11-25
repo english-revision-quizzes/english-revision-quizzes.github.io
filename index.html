@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Easy English - Dina Fathi</title><meta name="robots" content="noindex">
+<title>Easy English | Mrs. DINA FATHI</title><meta name="robots" content="noindex">
 <link rel="stylesheet" href="style.css"></head><body>
 <div class="wrap">
 <div class="hero">
 <h1>Easy <em>English</em></h1>
-<span class="by">by Dina Fathi</span>
+<span class="by">Mrs. DINA FATHI</span>
 <p id="greet" style="font-size:26px;font-weight:800;margin-top:20px">Welcome, Grade 10 students! 🌟</p>
-<p>Learn the words, understand the rules, then play your way through the question sets. Get every answer right to unlock the next one!</p>
-
+<p>Learn the words, learn the rules, then play your way up.</p>
+<a class="cont" id="cont" href="#" style="display:none"></a>
 </div>
+<div class="cdwrap" style="margin-top:6px"><h2>⏳ Exam countdown</h2><div id="cd"></div></div>
 <div class="grid2">
 <a class="big ol" href="ol.html"><div class="emoji">📘</div><div class="tag">GRADE 10</div><h2>English OL</h2><p>Units 1 to 6</p><span class="go">Open ➜</span></a>
 <a class="big al" href="al.html"><div class="emoji">📗</div><div class="tag">GRADE 10</div><h2>English AL</h2><p>Units 1 and 2</p><span class="go">Open ➜</span></a>
 </div>
-<div class="cdwrap" style="margin-top:22px"><h2>⏳ Exam countdown</h2><div id="cd"></div></div>
-<a class="mbtn" href="challenge.html" style="margin-top:18px;background:#fff">⚡ Challenge mode</a>
-<a class="mbtn" href="leaderboard.html" style="margin-top:10px;background:#fff">🏆 Leaderboard</a>
-<a class="mbtn" href="quick.html" style="margin-top:10px;background:#fff">🌙 Quick revision</a>
-<a class="mbtn" href="badges.html" style="margin-top:10px;background:#fff">🏅 My badges</a>
-<a class="mbtn" href="flashcards.html" style="margin-top:10px;background:#fff">🃏 Flashcards</a>
-<a class="mbtn" href="mistakes.html" style="margin-top:10px">📝 My mistakes</a>
+<div class="tiles">
+<a href="challenge.html"><b>⚡</b>Challenge mode</a>
+<a href="leaderboard.html"><b>🏆</b>Leaderboard</a>
+<a href="quick.html"><b>🌙</b>Quick revision</a>
+<a href="badges.html"><b>🏅</b>My badges</a>
+<a href="flashcards.html"><b>🃏</b>Flashcards</a>
+<a href="mistakes.html"><b>📝</b>My mistakes</a>
+</div>
 <div class="panel"><h2>How it works</h2>
 <ul class="pts"><li>📖 Read the short summary of each lesson.</li><li>🎯 Solve the sets, 10 questions each.</li><li>🔓 Answer all 10 correctly to unlock the next set.</li><li>⭐ Your progress is saved on this phone or computer.</li></ul></div>
 </div>
-<script src="app.js"></script><script>EE.header();EE.greet();EE.countdown("#cd");</script></body></html>
+<script src="app.js"></script><script>EE.header();EE.greet();EE.countdown("#cd");try{var L=localStorage.getItem("ee_last");if(L){var p=L.split("|");var c=document.getElementById("cont");c.href=p[0];c.textContent="▶ Continue: "+p[1];c.style.display="inline-block"}}catch(e){}</script></body></html>
