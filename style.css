@@ -234,3 +234,8 @@ body.dark .chip2{background:#2b2753;color:#c9c0ff}
 .qa{background:var(--soft);border-radius:14px;padding:10px 12px;margin:8px 0}.qa b{color:var(--bg1)}
 body.dark .qa b{color:#c9c0ff}
 body.dark .quiz{background:linear-gradient(160deg,#17133a 0%,#1d1850 40%,#10264a 75%,#0a3a3a 100%)}
+.avgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.avb{border:3px solid transparent;background:var(--soft);border-radius:18px;padding:4px;cursor:pointer;line-height:0}
+.avb.sel{border-color:var(--bg1);background:#e9e4ff;transform:scale(1.05)}
+#av{padding:4px 6px;line-height:0}
+body.dark .avb.sel{background:#3a3570}
