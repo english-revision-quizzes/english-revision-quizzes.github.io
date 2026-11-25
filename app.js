@@ -73,6 +73,7 @@ function header(){
   document.body.insertBefore(t,bub.nextSibling);
   function paint(){var mc=missCount();$('#mm').textContent='\ud83d\udcdd'+(mc?' '+mc:'');$('#mute').textContent=muted()?'🔇':'🔊';$('#who').textContent=user()?'👤 '+user():'👤 Sign in'}
   paint();
+  try{touchDay()}catch(e){}
   $('#mute').onclick=function(){store.set('ee_mute',muted()?'0':'1');paint();if(!muted()){audio();sfx.click()}};
   $('#who').onclick=function(){askName(false)};
   var f=el('div','foot','Easy English &middot; Dina Fathi');document.body.appendChild(f);
@@ -205,6 +206,14 @@ function initSection(cfg){
 }
 
 
+/* ---------- study days ---------- */
+function dkey(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function daysKey(){return 'ee_d_'+slug(user())}
+function getDays(){var a=[];try{a=JSON.parse(store.get(daysKey()))||[]}catch(e){}return a}
+function touchDay(){if(!user())return;var a=getDays(),t=dkey(new Date());if(a.indexOf(t)<0){a.push(t);a=a.slice(-120);store.set(daysKey(),JSON.stringify(a))}}
+function bestStreak(){var a=getDays().slice().sort(),best=0,cur=0,prev=null;a.forEach(function(k){var p=k.split('-'),d=Date.UTC(+p[0],+p[1]-1,+p[2]);cur=(prev!==null&&d-prev===864e5)?cur+1:1;prev=d;if(cur>best)best=cur});return best}
+function curStreak(){var a=getDays(),n=0,d=new Date();if(a.indexOf(dkey(d))<0)d.setDate(d.getDate()-1);while(a.indexOf(dkey(d))>-1){n++;d.setDate(d.getDate()-1)}return n}
+
 /* ---------- exam countdown ---------- */
 var EXAMS=[{name:'English AL',date:[2026,11,30],label:'Monday 30 November 2026',em:'\ud83d\udcd7'},{name:'English OL',date:[2026,12,9],label:'Wednesday 9 December 2026',em:'\ud83d\udcd8'}];
 function daysTo(d){var n=new Date();var a=Date.UTC(n.getFullYear(),n.getMonth(),n.getDate());var b=Date.UTC(d[0],d[1]-1,d[2]);return Math.round((b-a)/864e5)}
@@ -213,6 +222,6 @@ function countdown(sel,only){var m=$(sel);if(!m)return;var h='<div class="cdgrid
 /* ---------- welcome text on home ---------- */
 function greet(){var g=$('#greet');if(g&&user()){g.innerHTML='Welcome back, <span class="welcome-name">'+esc(user())+'</span>! 🌟'}}
 
-window.EE={countdown:countdown,getMiss:getMiss,missCount:missCount,removeMiss:removeMiss,recordMiss:recordMiss,header:header,initSection:initSection,getProg:getProg,doneCount:doneCount,greet:greet,user:user,say:say,sfx:sfx,_runSet:runSet};
+window.EE={bestStreak:bestStreak,curStreak:curStreak,countdown:countdown,getMiss:getMiss,missCount:missCount,removeMiss:removeMiss,recordMiss:recordMiss,header:header,initSection:initSection,getProg:getProg,doneCount:doneCount,greet:greet,user:user,say:say,sfx:sfx,_runSet:runSet};
 })();
 /* build 3 */
