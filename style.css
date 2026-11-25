@@ -170,3 +170,20 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
 .learn .formula .say{margin-left:8px}
 .learn li.chips{list-style:none;margin-left:-22px;display:flex;flex-wrap:wrap;gap:8px}
 .chip2{border:0;border-radius:999px;background:var(--soft);color:var(--bg1);font-weight:800;font-size:15px;padding:7px 12px;cursor:pointer}.chip2:active{transform:scale(.94);background:#e2dcff}
+.cogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:10px}
+.co{background:linear-gradient(160deg,#f3f1ff,#eaf6ff);border-radius:16px;padding:10px 12px;border:2px solid #e2dcff}
+.co.ex2{background:linear-gradient(160deg,#fff4e6,#ffeef3);border-color:#ffe0c9}
+.co .cw{font-size:17px}.co .cw b{color:var(--bg1)}.co .ar{direction:rtl;text-align:right;color:var(--coral);font-weight:800;margin-top:4px}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;margin-top:10px}
+.dg{background:var(--soft);border-radius:18px;padding:10px 12px}
+.dg .dh{font-weight:900;font-size:18px;color:#fff;background:linear-gradient(135deg,#5b3df5,#2e8bff);display:inline-block;border-radius:999px;padding:2px 14px;margin-bottom:6px}
+.dr{background:#fff;border-radius:12px;padding:8px 10px;margin-top:6px}
+.dr .dw{font-size:17px}.dr .pos{font-size:12px;font-weight:800;background:var(--soft);border-radius:999px;padding:1px 8px;color:var(--bg1)}
+.dr .ar{direction:rtl;text-align:right;color:var(--coral);font-weight:800}
+.dr .de{font-size:15px;color:var(--ink2);margin-top:2px}
+.cr{background:#fff;border-radius:12px;padding:8px 10px;margin-top:6px}.cr .cl{font-size:16px}.cr .ce{font-size:15px;color:var(--ink2);margin-top:2px;font-style:italic}
+.opt.sel{background:#e9e4ff;border-color:var(--bg1)}
+.imp{background:#fff7e0;border:2px solid var(--sun);border-left-width:8px;border-radius:14px;padding:10px 14px;margin:14px 0 4px}
+.imp h4{margin:0 0 4px;font-size:16px;color:#a86a00}
+.imp ul{margin:4px 0 0;padding-left:20px}.imp li{margin:4px 0}
+.qtext,.opt{unicode-bidi:plaintext;text-align:start}
