@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Challenge mode - Easy English</title><meta name="robots" content="noindex">
+<link rel="stylesheet" href="style.css"></head><body>
+<div class="wrap"><div class="crumbs"><a href="index.html">Home</a> › Challenge mode</div><h1 class="title">⚡ Challenge mode</h1>
+<p class="sub">10 quick questions from the whole unit. Be fast and be right to win bonus ⚡ stars!</p>
+<div class="panel"><div id="cl"></div></div></div>
+<script src="app.js"></script>
+<script>EE.header();(function(){
+var U={ol1:['Unit 1 · Egypt\'s Heritage',['ol1-vocab12','ol1-grammar3','ol1-vocab4','ol1-reading']],
+ol2:['Unit 2 · Hands Help, Hearts Care',['ol2-vocab12','ol2-grammar3','ol2-vocab45','ol2-reading']],
+ol3:['Unit 3 · Truth vs. Lies',['ol3-vocab12','ol3-grammar3','ol3-vocab45','ol3-reading']]};
+var pools={};
+function load(u){if(pools[u])return Promise.resolve(pools[u]);
+ return Promise.all(U[u][1].map(function(id){return fetch(id+'.html').then(function(r){return r.text()}).then(function(t){
+  var i=t.indexOf('sets:');var j=t.lastIndexOf('});');var arr=JSON.parse(t.slice(i+5,j));var out=[];arr.forEach(function(st){st.forEach(function(q){out.push(q)})});return out})})).then(function(a){pools[u]=[].concat.apply([],a);return pools[u]})}
+function ck(u){return 'ee_c_'+(EE.user()||'x').toLowerCase().replace(/[^a-z0-9]+/g,'_')+'_'+u}
+function getC(u){try{return JSON.parse(localStorage.getItem(ck(u)))||{}}catch(e){return {}}}
+function pick(a,n){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a.slice(0,n)}
+function draw(){var h='';Object.keys(U).forEach(function(u){var c=getC(u);
+ h+='<div style="margin-bottom:14px"><button class="btn" data-u="'+u+'" style="width:100%">⚡ '+U[u][0]+'</button>'+(c.runs?'<div class="cbest"><span>Best: '+c.best+' / 10 in '+c.bt+' s</span><span>⚡ total: '+(c.stars||0)+'</span></div>':'<div class="mini" style="margin-top:6px">No challenge played yet.</div>')+'</div>'});
+ document.getElementById('cl').innerHTML=h;
+ document.querySelectorAll('[data-u]').forEach(function(b){b.onclick=function(){var u=b.getAttribute('data-u');b.textContent='Loading...';
+  load(u).then(function(P){var qs=pick(P,10);
+   EE._runSet({title:'Challenge · '+U[u][0].split(' · ')[0],src:'Challenge · '+U[u][0].split(' · ')[0],challenge:true,questions:qs,hasNext:false,
+    onDone:function(pass,score,el,bonus){var c=getC(u);c.runs=(c.runs||0)+1;c.stars=(c.stars||0)+bonus;
+     if(c.best==null||score>c.best||(score===c.best&&el<c.bt)){c.best=score;c.bt=el}
+     localStorage.setItem(ck(u),JSON.stringify(c));draw()}})
+  }).catch(function(){b.textContent='Could not load. Try again.'})}})}
+draw();})();</script></body></html>
