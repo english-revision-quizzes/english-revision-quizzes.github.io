@@ -304,3 +304,6 @@ function greet(){var g=$('#greet');if(g&&user()){g.innerHTML='Welcome back, <spa
 window.EE={avSVG:avSVG,avIdx:avIdx,pickAvatar:pickAvatar,addPoints:addPoints,lbGet:lbGet,lbWeek:lbWeek,lbFirst:lbFirst,lbId:lbId,lbOff:lbOff,lbLocal:lbLocal,lbPush:lbPush,lbRemove:lbRemove,bestStreak:bestStreak,curStreak:curStreak,countdown:countdown,getMiss:getMiss,missCount:missCount,removeMiss:removeMiss,recordMiss:recordMiss,header:header,initSection:initSection,getProg:getProg,doneCount:doneCount,greet:greet,user:user,say:say,sfx:sfx,_runSet:runSet};
 })();
 /* build 3 */
+
+/* crumbfix */
+(function(){try{var m=location.pathname.match(/qr-(ol2|ol3b|ol3g|ol3|ol4g|ol4|al2)-/);if(!m)return;var k=m[1];var lv=k.indexOf('al')===0?['English AL','qr-level-al.html']:['English OL','qr-level-ol.html'];var u=k.indexOf('ol2')===0?'ol2':k.indexOf('ol3')===0?'ol3':k.indexOf('ol4')===0?'ol4':'al2';var un={ol2:'Unit 2',ol3:'Unit 3',ol4:'Unit 4',al2:'Unit 2'}[u];document.addEventListener('DOMContentLoaded',function(){try{var c=document.querySelector('.crumbs');if(!c)return;var parts=c.textContent.split('\u203a');var last=parts[parts.length-1].trim();c.innerHTML='<a href="index.html">Home</a> \u203a <a href="quizrev.html">Quiz Revision</a> \u203a <a href="'+lv[1]+'">'+lv[0]+'</a> \u203a <a href="qr-unit-'+u+'.html">'+un+'</a> \u203a '+last}catch(e){}})}catch(e){}})();
