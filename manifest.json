@@ -1,0 +1,17 @@
+{
+  "name": "Easy English | Mrs. DINA FATHI",
+  "short_name": "Easy English",
+  "description": "Easy English for Grade 10 students. Mrs. DINA FATHI",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#6a4cff",
+  "theme_color": "#6a4cff",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
